@@ -5,6 +5,7 @@ import ThemeToggle from '@/app/components/theme-toggle'
 import AdminControls from '@/app/dashboard/components/admin-controls'
 import InvoiceControls from '@/app/dashboard/components/invoice-controls'
 import CollaboratorControl from '@/app/dashboard/components/collaborator-control'
+import AppNavbar from '@/app/components/app-navbar'
 
 export default async function DashboardPage() {
     const supabase = await createClient()
@@ -80,6 +81,8 @@ export default async function DashboardPage() {
     const subscriptionCount = subscriptionsWithCollaborators.length
 
     return (
+        <>
+        <AppNavbar />
         <main className="min-h-screen bg-background text-foreground">
             <div className="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-8 lg:py-10">
 
@@ -128,8 +131,7 @@ export default async function DashboardPage() {
                         </div>
 
                         <div className="flex items-center gap-3">
-                            <ThemeToggle />
-                            <LogoutButton />
+                            
                         </div>
 
                     </div>
@@ -608,5 +610,6 @@ export default async function DashboardPage() {
 
             </div>
         </main>
+        </>
     )
 }

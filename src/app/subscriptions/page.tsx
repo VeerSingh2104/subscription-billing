@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import AppNavbar from '@/app/components/app-navbar'
 
 export default async function SubscriptionsPage() {
   const supabase = await createClient()
@@ -9,6 +10,8 @@ export default async function SubscriptionsPage() {
     .order('created_at', { ascending: false })
 
   return (
+    <>
+    <AppNavbar />
     <main className="p-10">
       <h1 className="text-3xl font-bold">
         Subscriptions
@@ -52,5 +55,6 @@ export default async function SubscriptionsPage() {
         ))}
       </div>
     </main>
+    </>
   )
 }

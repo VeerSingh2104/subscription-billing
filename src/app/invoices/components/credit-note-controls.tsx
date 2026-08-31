@@ -27,7 +27,9 @@ export default function CreditNoteControls({
     const reason = (formData.get('reason') as string).trim()
 
     if (!amount || amount <= 0) {
-      throw new Error('Credit note amount must be greater than zero')
+      throw new Error(
+        'Credit note amount must be greater than zero'
+      )
     }
 
     if (amount > invoiceAmount) {
@@ -38,6 +40,36 @@ export default function CreditNoteControls({
 
     if (!reason) {
       throw new Error('Reason is required')
+    }
+
+    // Get all existing credit notes for this invoice.
+    const { data: existingCreditNotes, error: creditNotesError } =
+      await supabase
+        .from('credit_notes')
+        .select('amount')
+        .eq('invoice_id', invoiceId)
+
+    if (creditNotesError) {
+      throw new Error(creditNotesError.message)
+    }
+
+    // Calculate the total amount already credited.
+    const totalCredited =
+      existingCreditNotes?.reduce(
+        (total, creditNote) =>
+          total + Number(creditNote.amount),
+        0
+      ) ?? 0
+
+    // Make sure the new credit note does not push
+    // the total above the invoice amount.
+    if (totalCredited + amount > invoiceAmount) {
+      const remainingCredit =
+        invoiceAmount - totalCredited
+
+      throw new Error(
+        `Credit note exceeds the remaining creditable amount of ₹${remainingCredit.toFixed(2)}`
+      )
     }
 
     const { data: creditNote, error } = await supabase
@@ -75,6 +107,7 @@ export default function CreditNoteControls({
     }
 
     revalidatePath('/invoices')
+    revalidatePath(`/invoices/${invoiceId}`)
   }
 
   return (
@@ -83,7 +116,10 @@ export default function CreditNoteControls({
         Issue Credit Note
       </h3>
 
-      <form action={issueCreditNote} className="mt-4 space-y-3">
+      <form
+        action={issueCreditNote}
+        className="mt-4 space-y-3"
+      >
         <input
           name="amount"
           type="number"
