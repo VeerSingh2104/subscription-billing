@@ -6,6 +6,12 @@ import AdminControls from '@/app/dashboard/components/admin-controls'
 import InvoiceControls from '@/app/dashboard/components/invoice-controls'
 import CollaboratorControl from '@/app/dashboard/components/collaborator-control'
 import AppNavbar from '@/app/components/app-navbar'
+import Link from 'next/link'
+
+type AccountManager = {
+    id: string
+    full_name: string | null
+}
 
 export default async function DashboardPage() {
     const supabase = await createClient()
@@ -51,6 +57,24 @@ export default async function DashboardPage() {
             .from('subscriptions')
             .select('*')
 
+    let managerProfiles: AccountManager[] = []
+    let managerProfilesError: string | null = null
+
+    if (profile.role === 'BILLING_ADMIN') {
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('id, full_name')
+            .eq('role', 'ACCOUNT_MANAGER')
+            .order('full_name', { ascending: true })
+
+        managerProfiles = data ?? []
+        managerProfilesError = error?.message ?? null
+    }
+
+    const managerNamesById = new Map(
+        managerProfiles.map((manager) => [manager.id, manager.full_name])
+    )
+
     /*
      * Load collaborators separately for each subscription.
      * This avoids depending on Supabase's automatic relationship
@@ -73,7 +97,11 @@ export default async function DashboardPage() {
 
             return {
                 ...subscription,
-                collaborators: collaborators ?? [],
+                collaborators: (collaborators ?? []).map((collaborator) => ({
+                    ...collaborator,
+                    full_name:
+                        managerNamesById.get(collaborator.user_id) ?? null,
+                })),
             }
         })
     )
@@ -423,7 +451,14 @@ export default async function DashboardPage() {
                                             </p>
 
                                         </div>
-
+                                        <div className="mt-6">
+    <Link
+        href={`/subscriptions/${subscription.id}`}
+        className="inline-flex w-full items-center justify-center rounded-xl border border-border px-4 py-3 text-sm font-semibold transition hover:bg-muted"
+    >
+        View Subscription
+    </Link>
+</div>
                                     </div>
 
                                 </div>
@@ -462,6 +497,8 @@ export default async function DashboardPage() {
                                         <CollaboratorControl
                                             subscriptionId={subscription.id}
                                             collaborators={subscription.collaborators ?? []}
+                                            availableManagers={managerProfiles}
+                                            managersLoadError={managerProfilesError}
                                         />
 
                                     </div>

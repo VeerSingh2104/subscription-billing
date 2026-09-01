@@ -1,5 +1,7 @@
-import { createClient } from '@/lib/supabase/server'
-import { revalidatePath } from 'next/cache'
+'use client'
+
+import { useState } from 'react'
+import { issueCreditNote } from '@/app/invoices/actions/credit-note-actions'
 
 type CreditNoteControlsProps = {
   invoiceId: string
@@ -10,104 +12,36 @@ export default function CreditNoteControls({
   invoiceId,
   invoiceAmount,
 }: CreditNoteControlsProps) {
-  async function issueCreditNote(formData: FormData) {
-    'use server'
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  const [loading, setLoading] = useState(false)
 
-    const supabase = await createClient()
+  async function handleSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault()
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
+    setError('')
+    setSuccess('')
+    setLoading(true)
 
-    if (!user) {
-      throw new Error('Not authenticated')
+    const formData = new FormData(event.currentTarget)
+
+    const result = await issueCreditNote(
+      invoiceId,
+      formData
+    )
+
+    setLoading(false)
+
+    if (!result.success) {
+      setError(result.error ?? 'Failed to issue credit note.')
+      return
     }
 
-    const amount = Number(formData.get('amount'))
-    const reason = (formData.get('reason') as string).trim()
+    setSuccess('Credit note issued successfully.')
 
-    if (!amount || amount <= 0) {
-      throw new Error(
-        'Credit note amount must be greater than zero'
-      )
-    }
-
-    if (amount > invoiceAmount) {
-      throw new Error(
-        'Credit note amount cannot exceed invoice amount'
-      )
-    }
-
-    if (!reason) {
-      throw new Error('Reason is required')
-    }
-
-    // Get all existing credit notes for this invoice.
-    const { data: existingCreditNotes, error: creditNotesError } =
-      await supabase
-        .from('credit_notes')
-        .select('amount')
-        .eq('invoice_id', invoiceId)
-
-    if (creditNotesError) {
-      throw new Error(creditNotesError.message)
-    }
-
-    // Calculate the total amount already credited.
-    const totalCredited =
-      existingCreditNotes?.reduce(
-        (total, creditNote) =>
-          total + Number(creditNote.amount),
-        0
-      ) ?? 0
-
-    // Make sure the new credit note does not push
-    // the total above the invoice amount.
-    if (totalCredited + amount > invoiceAmount) {
-      const remainingCredit =
-        invoiceAmount - totalCredited
-
-      throw new Error(
-        `Credit note exceeds the remaining creditable amount of ₹${remainingCredit.toFixed(2)}`
-      )
-    }
-
-    const { data: creditNote, error } = await supabase
-      .from('credit_notes')
-      .insert({
-        invoice_id: invoiceId,
-        amount,
-        reason,
-        issued_by: user.id,
-      })
-      .select('id, amount, reason')
-      .single()
-
-    if (error) {
-      throw new Error(error.message)
-    }
-
-    const { error: historyError } = await supabase
-      .from('invoice_history')
-      .insert({
-        invoice_id: invoiceId,
-        event_type: 'CREDIT_NOTE_ISSUED',
-        actor_id: user.id,
-        old_status: null,
-        new_status: null,
-        details: {
-          credit_note_id: creditNote.id,
-          amount: creditNote.amount,
-          reason: creditNote.reason,
-        },
-      })
-
-    if (historyError) {
-      throw new Error(historyError.message)
-    }
-
-    revalidatePath('/invoices')
-    revalidatePath(`/invoices/${invoiceId}`)
+    event.currentTarget.reset()
   }
 
   return (
@@ -116,8 +50,20 @@ export default function CreditNoteControls({
         Issue Credit Note
       </h3>
 
+      {error && (
+        <div className="mt-4 rounded-md border border-red-500/40 bg-red-500/10 p-3 text-sm text-red-600 dark:text-red-400">
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="mt-4 rounded-md border border-green-500/40 bg-green-500/10 p-3 text-sm text-green-600 dark:text-green-400">
+          {success}
+        </div>
+      )}
+
       <form
-        action={issueCreditNote}
+        onSubmit={handleSubmit}
         className="mt-4 space-y-3"
       >
         <input
@@ -141,9 +87,12 @@ export default function CreditNoteControls({
 
         <button
           type="submit"
-          className="rounded-md border px-4 py-2 font-medium"
+          disabled={loading}
+          className="rounded-md border px-4 py-2 font-medium transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-800"
         >
-          Issue Credit Note
+          {loading
+            ? 'Issuing...'
+            : 'Issue Credit Note'}
         </button>
       </form>
     </div>

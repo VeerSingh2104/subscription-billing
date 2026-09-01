@@ -5,7 +5,7 @@ import InvoiceHistory from '@/app/invoices/components/invoice-history'
 import InvoiceNotes from '@/app/invoices/components/invoice-notes'
 import CreditNoteControls from '@/app/invoices/components/credit-note-controls'
 import InvoicePdfButton from '@/app/invoices/components/invoice-pdf-button'
-
+import Link from 'next/link'
 type InvoicePageProps = {
   params: Promise<{
     id: string
@@ -53,23 +53,27 @@ export default async function InvoiceDetailsPage({
   return (
     <main className="p-10">
       {/* Back */}
-      <a
+      <Link
         href="/invoices"
         className="text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white"
       >
         ← Back to Invoices
-      </a>
+      </Link>
 
       {/* Header */}
-      <div className="mt-6">
-        <h1 className="text-3xl font-bold">
-          Invoice Details
-        </h1>
+<div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+  <div>
+    <h1 className="text-3xl font-bold">
+      Invoice Details
+    </h1>
 
-        <p className="mt-2 text-gray-500">
-          {invoice.subscriptions?.customer_name}
-        </p>
-      </div>
+    <p className="mt-2 text-gray-500">
+      {invoice.subscriptions?.customer_name}
+    </p>
+  </div>
+
+  <InvoicePdfButton invoiceId={invoice.id} />
+</div>
 
       {/* Invoice Information */}
       <section className="mt-8 rounded-lg border p-6">
@@ -176,9 +180,7 @@ export default async function InvoiceDetailsPage({
           />
         </section>
       )}
-        <div className="mt-6">
-            <InvoicePdfButton invoiceId={invoice.id} />
-        </div>
+        
       {/* Notes */}
       <section className="mt-6 rounded-lg border p-6">
         <InvoiceNotes invoiceId={invoice.id} />

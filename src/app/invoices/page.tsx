@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import AppNavbar from '@/app/components/app-navbar'
+import InvoiceList from './invoice-list'
 
 export default async function InvoicesPage() {
   const supabase = await createClient()
@@ -27,69 +28,51 @@ export default async function InvoicesPage() {
 
   return (
     <>
-    <AppNavbar />
-    <main className="p-10">
-      <h1 className="text-3xl font-bold">
-        Invoices
-      </h1>
+      <AppNavbar />
 
-      <p className="mt-2 text-gray-500">
-        View and manage your invoices.
-      </p>
+      <main className="min-h-screen bg-background text-foreground">
+        <div className="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-8 lg:py-10">
+          <header className="flex flex-col gap-4 border-b border-border pb-8 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-blue-600 dark:text-blue-300">
+                Billing activity
+              </p>
 
-      {error && (
-        <p className="mt-4 text-red-600">
-          Error: {error.message}
-        </p>
-      )}
+              <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+                Invoices
+              </h1>
 
-      {!error && invoices?.length === 0 && (
-        <p className="mt-6 text-gray-500">
-          No invoices found.
-        </p>
-      )}
-
-      <div className="mt-6 space-y-4">
-        {invoices?.map((invoice) => (
-          <div
-            key={invoice.id}
-            className="rounded-lg border p-5"
-          >
-            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-              <div>
-                <p className="font-semibold">
-                  {invoice.subscriptions?.customer_name}
-                </p>
-
-                <p className="mt-1 text-sm text-gray-500">
-                  {invoice.subscriptions?.plan_name} ·{' '}
-                  {invoice.subscriptions?.billing_cycle}
-                </p>
-
-                <p className="mt-3">
-                  ₹{invoice.amount}
-                </p>
-
-                <p className="mt-1 text-sm text-gray-500">
-                  Due: {invoice.due_date}
-                </p>
-
-                <p className="mt-1 text-sm text-gray-500">
-                  Status: {invoice.status}
-                </p>
-              </div>
-
-              <a
-                href={`/invoices/${invoice.id}`}
-                className="rounded-md border px-4 py-2 text-center font-medium transition hover:bg-gray-100 dark:hover:bg-gray-800"
-              >
-                View Invoice
-              </a>
+              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                Filter by status, find a customer quickly, and open invoice details.
+              </p>
             </div>
-          </div>
-        ))}
-      </div>
-    </main>
+
+            <div className="rounded-xl border border-border bg-card px-4 py-3 shadow-sm">
+              <p className="text-xs font-semibold uppercase text-muted-foreground">
+                Total
+              </p>
+              <p className="mt-1 text-2xl font-bold">
+                {invoices?.length ?? 0}
+              </p>
+            </div>
+          </header>
+
+          {error ? (
+            <div className="mt-8 rounded-xl border border-red-500/20 bg-red-500/10 p-5 text-sm text-red-700 dark:text-red-300">
+              Could not load invoices: {error.message}
+            </div>
+          ) : invoices && invoices.length > 0 ? (
+            <InvoiceList invoices={invoices} />
+          ) : (
+            <div className="mt-8 rounded-xl border border-dashed border-border bg-card p-12 text-center">
+              <p className="font-semibold">No invoices found</p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                New invoices will appear here once they are created.
+              </p>
+            </div>
+          )}
+        </div>
+      </main>
     </>
   )
 }
