@@ -3,7 +3,27 @@ import { redirect } from 'next/navigation'
 import AppNavbar from '@/app/components/app-navbar'
 import InvoiceList from './invoice-list'
 
-export default async function InvoicesPage() {
+const PAGE_SIZE = 10
+
+type SearchParams = {
+  q?: string
+  status?: string
+  overdue?: string
+  owner?: string
+  sort?: string
+  direction?: string
+  page?: string
+}
+
+const ALLOWED_STATUSES = ['DRAFT', 'ISSUED', 'PAID', 'VOID']
+
+const ALLOWED_SORTS = ['due_date', 'amount', 'status']
+
+export default async function InvoicesPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>
+}) {
   const supabase = await createClient()
 
   const {
@@ -14,17 +34,374 @@ export default async function InvoicesPage() {
     redirect('/login')
   }
 
-  const { data: invoices, error } = await supabase
-    .from('invoices')
-    .select(`
-      *,
-      subscriptions (
+  const params = await searchParams
+
+  const query =
+    typeof params.q === 'string'
+      ? params.q.trim()
+      : ''
+
+  const status = ALLOWED_STATUSES.includes(
+    params.status ?? ''
+  )
+    ? params.status!
+    : 'ALL'
+
+  const overdue = params.overdue === 'true'
+
+  const owner =
+    typeof params.owner === 'string'
+      ? params.owner
+      : 'ALL'
+
+  const sort = ALLOWED_SORTS.includes(
+    params.sort ?? ''
+  )
+    ? params.sort!
+    : 'due_date'
+
+  const direction =
+    params.direction === 'desc'
+      ? 'desc'
+      : 'asc'
+
+  const requestedPage = Number.parseInt(
+    params.page ?? '1',
+    10
+  )
+
+  const page =
+    Number.isFinite(requestedPage) &&
+    requestedPage > 0
+      ? requestedPage
+      : 1
+
+  /*
+   * ---------------------------------------------------------
+   * 1. Load account managers for the owner filter.
+   * ---------------------------------------------------------
+   */
+
+  const {
+    data: owners,
+    error: ownersError,
+  } = await supabase
+    .from('profiles')
+    .select('id, full_name')
+    .eq('role', 'ACCOUNT_MANAGER')
+    .order('full_name', {
+      ascending: true,
+    })
+
+  /*
+   * ---------------------------------------------------------
+   * 2. Find subscriptions visible to this user.
+   *
+   * Search and owner filtering happen in Postgres here.
+   * We only need subscription IDs for the invoice query.
+   * ---------------------------------------------------------
+   */
+
+  let subscriptionQuery = supabase
+    .from('subscriptions')
+    .select(
+      `
+        id,
         customer_name,
+        billing_email,
         plan_name,
-        billing_cycle
+        billing_cycle,
+        owner_id
+      `
+    )
+
+  /*
+   * Search customer name OR billing email.
+   */
+  if (query) {
+    const escapedQuery = query
+      .replace(/\\/g, '\\\\')
+      .replace(/%/g, '\\%')
+      .replace(/,/g, '\\,')
+
+    subscriptionQuery = subscriptionQuery.or(
+      `customer_name.ilike.%${escapedQuery}%,billing_email.ilike.%${escapedQuery}%`
+    )
+  }
+
+  /*
+   * Filter by owning account manager.
+   */
+  if (owner !== 'ALL') {
+    subscriptionQuery = subscriptionQuery.eq(
+      'owner_id',
+      owner
+    )
+  }
+
+  const {
+    data: subscriptions,
+    error: subscriptionError,
+  } = await subscriptionQuery
+
+  if (subscriptionError) {
+    console.error(
+      'Could not load subscriptions:',
+      subscriptionError
+    )
+  }
+
+  /*
+   * ---------------------------------------------------------
+   * 3. Get subscription IDs.
+   * ---------------------------------------------------------
+   */
+
+  const visibleSubscriptions =
+    subscriptions ?? []
+
+  const subscriptionIds =
+    visibleSubscriptions.map(
+      (subscription) => subscription.id
+    )
+
+  /*
+   * ---------------------------------------------------------
+   * 4. Fetch invoices belonging to those subscriptions.
+   *
+   * Status, overdue, sorting and pagination all happen
+   * server-side in Postgres.
+   * ---------------------------------------------------------
+   */
+
+  let invoices: any[] = []
+  let invoiceError: any = null
+  let count: number | null = 0
+
+  /*
+   * If there are no matching subscriptions, there cannot
+   * be any matching invoices.
+   */
+  if (subscriptionIds.length > 0) {
+    let invoiceQuery = supabase
+      .from('invoices')
+      .select(
+        `
+          id,
+          subscription_id,
+          billing_period_start,
+          billing_period_end,
+          amount,
+          due_date,
+          status,
+          created_at
+        `,
+        { count: 'exact' }
       )
-    `)
-    .order('created_at', { ascending: false })
+      .in(
+        'subscription_id',
+        subscriptionIds
+      )
+
+    /*
+     * Status filter.
+     */
+    if (status !== 'ALL') {
+      invoiceQuery = invoiceQuery.eq(
+        'status',
+        status
+      )
+    }
+
+    /*
+     * Overdue filter.
+     *
+     * An invoice is overdue when:
+     * - due date is before today
+     * - it is not PAID
+     * - it is not VOID
+     */
+    if (overdue) {
+      const today = new Date()
+        .toISOString()
+        .split('T')[0]
+
+      invoiceQuery = invoiceQuery
+        .lt('due_date', today)
+        .neq('status', 'PAID')
+        .neq('status', 'VOID')
+    }
+
+    /*
+     * Server-side sorting.
+     */
+    invoiceQuery = invoiceQuery.order(
+      sort,
+      {
+        ascending:
+          direction === 'asc',
+      }
+    )
+
+    /*
+     * Stable secondary sort.
+     */
+    invoiceQuery = invoiceQuery.order(
+      'created_at',
+      {
+        ascending: false,
+      }
+    )
+
+    /*
+     * Server-side pagination.
+     */
+    const from =
+      (page - 1) * PAGE_SIZE
+
+    const to =
+      from + PAGE_SIZE - 1
+
+    invoiceQuery =
+      invoiceQuery.range(
+        from,
+        to
+      )
+
+    const result =
+      await invoiceQuery
+
+    invoices =
+      result.data ?? []
+
+    invoiceError =
+      result.error
+
+    count =
+      result.count
+  }
+
+  /*
+   * ---------------------------------------------------------
+   * 5. Combine invoice + subscription data on the SERVER.
+   *
+   * This restores the convenient shape expected by
+   * InvoiceList without using Supabase nested relationships.
+   * ---------------------------------------------------------
+   */
+
+  const subscriptionMap =
+    new Map(
+      visibleSubscriptions.map(
+        (subscription) => [
+          subscription.id,
+          subscription,
+        ]
+      )
+    )
+
+  const invoicesWithSubscriptions =
+    invoices.map((invoice) => ({
+      ...invoice,
+      subscriptions: [
+        subscriptionMap.get(
+          invoice.subscription_id
+        ),
+      ].filter(Boolean),
+    }))
+
+  /*
+   * ---------------------------------------------------------
+   * 6. Pagination information.
+   * ---------------------------------------------------------
+   */
+
+  const totalMatches =
+    count ?? 0
+
+  const totalPages =
+    Math.max(
+      1,
+      Math.ceil(
+        totalMatches / PAGE_SIZE
+      )
+    )
+
+  /*
+   * If someone manually enters a page beyond
+   * the available range, redirect to the last page.
+   */
+  if (
+    totalMatches > 0 &&
+    page > totalPages
+  ) {
+    const correctedParams =
+      new URLSearchParams()
+
+    if (query) {
+      correctedParams.set(
+        'q',
+        query
+      )
+    }
+
+    if (status !== 'ALL') {
+      correctedParams.set(
+        'status',
+        status
+      )
+    }
+
+    if (overdue) {
+      correctedParams.set(
+        'overdue',
+        'true'
+      )
+    }
+
+    if (owner !== 'ALL') {
+      correctedParams.set(
+        'owner',
+        owner
+      )
+    }
+
+    if (sort !== 'due_date') {
+      correctedParams.set(
+        'sort',
+        sort
+      )
+    }
+
+    if (direction !== 'asc') {
+      correctedParams.set(
+        'direction',
+        direction
+      )
+    }
+
+    correctedParams.set(
+      'page',
+      String(totalPages)
+    )
+
+    redirect(
+      `/invoices?${correctedParams.toString()}`
+    )
+  }
+
+  const currentFrom =
+    totalMatches === 0
+      ? 0
+      : (page - 1) * PAGE_SIZE + 1
+
+  const currentTo =
+    totalMatches === 0
+      ? 0
+      : Math.min(
+          page * PAGE_SIZE,
+          totalMatches
+        )
 
   return (
     <>
@@ -43,33 +420,59 @@ export default async function InvoicesPage() {
               </h1>
 
               <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-                Filter by status, find a customer quickly, and open invoice details.
+                Search, filter and sort invoices across your billing portfolio.
               </p>
             </div>
 
             <div className="rounded-xl border border-border bg-card px-4 py-3 shadow-sm">
               <p className="text-xs font-semibold uppercase text-muted-foreground">
-                Total
+                Total matches
               </p>
+
               <p className="mt-1 text-2xl font-bold">
-                {invoices?.length ?? 0}
+                {totalMatches}
               </p>
             </div>
           </header>
 
-          {error ? (
+          {invoiceError ? (
             <div className="mt-8 rounded-xl border border-red-500/20 bg-red-500/10 p-5 text-sm text-red-700 dark:text-red-300">
-              Could not load invoices: {error.message}
+              Could not load invoices:{' '}
+              {invoiceError.message}
             </div>
-          ) : invoices && invoices.length > 0 ? (
-            <InvoiceList invoices={invoices} />
+          ) : subscriptionError ? (
+            <div className="mt-8 rounded-xl border border-red-500/20 bg-red-500/10 p-5 text-sm text-red-700 dark:text-red-300">
+              Could not load subscriptions:{' '}
+              {subscriptionError.message}
+            </div>
           ) : (
-            <div className="mt-8 rounded-xl border border-dashed border-border bg-card p-12 text-center">
-              <p className="font-semibold">No invoices found</p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                New invoices will appear here once they are created.
-              </p>
-            </div>
+            <InvoiceList
+              invoices={
+                invoicesWithSubscriptions
+              }
+              owners={
+                owners ?? []
+              }
+              query={query}
+              status={status}
+              overdue={overdue}
+              owner={owner}
+              sort={sort}
+              direction={direction}
+              page={page}
+              totalMatches={
+                totalMatches
+              }
+              totalPages={
+                totalPages
+              }
+              currentFrom={
+                currentFrom
+              }
+              currentTo={
+                currentTo
+              }
+            />
           )}
         </div>
       </main>
