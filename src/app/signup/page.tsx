@@ -13,14 +13,12 @@ export default function SignupPage() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
-  const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault()
 
     setError('')
-    setMessage('')
 
     if (password !== confirmPassword) {
       setError('Passwords do not match')
@@ -34,7 +32,7 @@ export default function SignupPage() {
 
     setLoading(true)
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -50,11 +48,16 @@ export default function SignupPage() {
       return
     }
 
-    setMessage(
-      'Account created. Please check your email to verify your account.'
-    )
+    if (!data.user || !data.session) {
+      setError(
+        'Account was created, but you could not be logged in automatically. Please try signing in.'
+      )
+      setLoading(false)
+      return
+    }
 
-    setLoading(false)
+    router.push('/dashboard')
+    router.refresh()
   }
 
   return (
@@ -107,6 +110,7 @@ export default function SignupPage() {
             <input
               type="password"
               required
+              minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-lg border p-3"
@@ -122,6 +126,7 @@ export default function SignupPage() {
             <input
               type="password"
               required
+              minLength={6}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full rounded-lg border p-3"
@@ -132,12 +137,6 @@ export default function SignupPage() {
           {error && (
             <p className="text-sm text-red-600">
               {error}
-            </p>
-          )}
-
-          {message && (
-            <p className="text-sm text-green-600">
-              {message}
             </p>
           )}
 
