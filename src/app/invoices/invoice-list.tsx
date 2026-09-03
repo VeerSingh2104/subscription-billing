@@ -84,9 +84,6 @@ export default function InvoiceList({
   ) {
     const params = buildQueryString(currentParams, updates)
 
-    /*
-     * Any filter/sort change starts from page 1.
-     */
     params.delete('page')
 
     const queryString = params.toString()
@@ -115,11 +112,14 @@ export default function InvoiceList({
   }
 
   return (
-    <div className="mt-8">
-      <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+    <div className="mt-6">
+
+      {/* Filters */}
+      <div className="rounded-xl border border-border bg-card p-3.5 shadow-sm">
+        <div className="grid gap-2.5 md:grid-cols-2 lg:grid-cols-4">
+
           <label className="block lg:col-span-2">
-            <span className="mb-1 block text-xs font-semibold uppercase text-muted-foreground">
+            <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
               Search
             </span>
 
@@ -128,22 +128,17 @@ export default function InvoiceList({
               onChange={(event) => {
                 const value = event.target.value
 
-                /*
-                 * We intentionally update on change here.
-                 * For a large production dataset this could be debounced,
-                 * but the actual filtering remains server-side.
-                 */
                 updateFilters({
                   q: value.trim() || null,
                 })
               }}
               placeholder="Customer name or billing email"
-              className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+              className="h-10 w-full rounded-lg border border-border bg-background px-3 text-xs outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
             />
           </label>
 
           <label className="block">
-            <span className="mb-1 block text-xs font-semibold uppercase text-muted-foreground">
+            <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
               Status
             </span>
 
@@ -154,7 +149,7 @@ export default function InvoiceList({
                   status: event.target.value,
                 })
               }
-              className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+              className="h-10 w-full rounded-lg border border-border bg-background px-3 text-xs outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
             >
               <option value="ALL">All statuses</option>
               <option value="DRAFT">Draft</option>
@@ -165,7 +160,7 @@ export default function InvoiceList({
           </label>
 
           <label className="block">
-            <span className="mb-1 block text-xs font-semibold uppercase text-muted-foreground">
+            <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
               Account Manager
             </span>
 
@@ -176,7 +171,7 @@ export default function InvoiceList({
                   owner: event.target.value,
                 })
               }
-              className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+              className="h-10 w-full rounded-lg border border-border bg-background px-3 text-xs outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
             >
               <option value="ALL">
                 All account managers
@@ -191,10 +186,12 @@ export default function InvoiceList({
           </label>
         </div>
 
-        <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div className="flex flex-col gap-3 sm:flex-row">
+        {/* Secondary filters */}
+        <div className="mt-2.5 flex flex-col gap-2.5 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex flex-col gap-2.5 sm:flex-row">
+
             <label className="block">
-              <span className="mb-1 block text-xs font-semibold uppercase text-muted-foreground">
+              <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                 Sort by
               </span>
 
@@ -205,7 +202,7 @@ export default function InvoiceList({
                     sort: event.target.value,
                   })
                 }
-                className="h-11 min-w-44 rounded-lg border border-border bg-background px-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                className="h-10 min-w-40 rounded-lg border border-border bg-background px-3 text-xs outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
               >
                 <option value="due_date">
                   Due date
@@ -220,7 +217,7 @@ export default function InvoiceList({
             </label>
 
             <label className="block">
-              <span className="mb-1 block text-xs font-semibold uppercase text-muted-foreground">
+              <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                 Direction
               </span>
 
@@ -231,7 +228,7 @@ export default function InvoiceList({
                     direction: event.target.value,
                   })
                 }
-                className="h-11 min-w-44 rounded-lg border border-border bg-background px-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                className="h-10 min-w-40 rounded-lg border border-border bg-background px-3 text-xs outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
               >
                 <option value="asc">
                   Ascending
@@ -242,7 +239,7 @@ export default function InvoiceList({
               </select>
             </label>
 
-            <label className="flex h-11 items-center gap-2 rounded-lg border border-border bg-background px-3">
+            <label className="flex h-10 items-center gap-2 rounded-lg border border-border bg-background px-3">
               <input
                 type="checkbox"
                 checked={overdue}
@@ -253,10 +250,10 @@ export default function InvoiceList({
                       : null,
                   })
                 }
-                className="h-4 w-4 rounded border-border"
+                className="h-3.5 w-3.5 rounded border-border"
               />
 
-              <span className="text-sm font-medium">
+              <span className="text-xs font-medium">
                 Overdue only
               </span>
             </label>
@@ -269,7 +266,7 @@ export default function InvoiceList({
             <button
               type="button"
               onClick={clearFilters}
-              className="h-11 rounded-lg border border-border px-4 text-sm font-semibold transition hover:bg-muted"
+              className="h-10 rounded-lg border border-border px-3.5 text-xs font-semibold transition hover:bg-muted"
             >
               Clear filters
             </button>
@@ -277,7 +274,8 @@ export default function InvoiceList({
         </div>
       </div>
 
-      <div className="mt-4 flex flex-col gap-2 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+      {/* Result count */}
+      <div className="mt-3 flex flex-col gap-1.5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
         <p>
           {totalMatches === 0
             ? 'No matching invoices'
@@ -289,19 +287,21 @@ export default function InvoiceList({
         </p>
       </div>
 
+      {/* Empty state */}
       {invoices.length === 0 ? (
-        <div className="mt-4 rounded-xl border border-dashed border-border bg-card p-10 text-center">
-          <p className="font-semibold">
+        <div className="mt-3 rounded-xl border border-dashed border-border bg-card px-6 py-8 text-center">
+          <p className="text-sm font-semibold">
             No matching invoices
           </p>
 
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className="mt-1 text-xs text-muted-foreground">
             Try changing your search or filters.
           </p>
         </div>
       ) : (
         <>
-          <div className="mt-4 divide-y divide-border overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+          {/* Invoice list */}
+          <div className="mt-3 divide-y divide-border overflow-hidden rounded-xl border border-border bg-card shadow-sm">
             {invoices.map((invoice) => {
               const subscription = invoice.subscriptions?.[0]
 
@@ -309,11 +309,11 @@ export default function InvoiceList({
                 <Link
                   key={invoice.id}
                   href={`/invoices/${invoice.id}`}
-                  className="group grid gap-4 p-5 outline-none transition hover:bg-muted/40 focus-visible:ring-4 focus-visible:ring-blue-500/20 md:grid-cols-[1fr_auto_auto]"
+                  className="group grid gap-3 px-4 py-3.5 outline-none transition hover:bg-muted/40 focus-visible:ring-4 focus-visible:ring-blue-500/20 md:grid-cols-[1fr_auto_auto]"
                 >
                   <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <p className="truncate font-bold">
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <p className="truncate text-sm font-semibold">
                         {subscription?.customer_name ||
                           'Unknown customer'}
                       </p>
@@ -323,53 +323,55 @@ export default function InvoiceList({
                       />
                     </div>
 
-                    <p className="mt-1 truncate text-sm text-muted-foreground">
+                    <p className="mt-0.5 truncate text-xs text-muted-foreground">
                       {subscription?.billing_email ||
                         'No billing email'}
                     </p>
 
-                    <p className="mt-1 truncate text-sm text-muted-foreground">
+                    <p className="mt-0.5 truncate text-xs text-muted-foreground">
                       {subscription?.plan_name} ·{' '}
                       {subscription?.billing_cycle}
                     </p>
 
-                    <p className="mt-1 text-xs text-muted-foreground">
-  Owner:{' '}
-  {owners.find(
-    (item) => item.id === subscription?.owner_id
-  )?.full_name || 'Unassigned'}
-</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      Owner:{' '}
+                      {owners.find(
+                        (item) =>
+                          item.id === subscription?.owner_id
+                      )?.full_name || 'Unassigned'}
+                    </p>
                   </div>
 
-                  <div className="text-sm md:text-right">
-                    <p className="font-bold">
+                  <div className="text-xs md:text-right">
+                    <p className="font-semibold">
                       {formatCurrency(invoice.amount)}
                     </p>
 
-                    <p className="mt-1 text-muted-foreground">
+                    <p className="mt-0.5 text-muted-foreground">
                       Due {formatDate(invoice.due_date)}
                     </p>
                   </div>
 
-                  <div className="self-center text-sm font-semibold text-blue-600 transition group-hover:translate-x-1 dark:text-blue-300">
-                    Open
+                  <div className="self-center text-xs font-semibold text-blue-600 transition group-hover:translate-x-1 dark:text-blue-300">
+                    Open →
                   </div>
                 </Link>
               )
             })}
           </div>
 
-          <div className="mt-5 flex items-center justify-between rounded-xl border border-border bg-card p-3">
+          {/* Pagination */}
+          <div className="mt-3 flex items-center justify-between rounded-xl border border-border bg-card px-3 py-2.5">
             <button
               type="button"
               disabled={page <= 1}
               onClick={() => goToPage(page - 1)}
-              className="rounded-lg border border-border px-4 py-2 text-sm font-semibold transition hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold transition hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
             >
               Previous
             </button>
 
-            <div className="text-sm text-muted-foreground">
+            <div className="text-xs text-muted-foreground">
               Page{' '}
               <span className="font-semibold text-foreground">
                 {page}
@@ -384,7 +386,7 @@ export default function InvoiceList({
               type="button"
               disabled={page >= totalPages}
               onClick={() => goToPage(page + 1)}
-              className="rounded-lg border border-border px-4 py-2 text-sm font-semibold transition hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold transition hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
             >
               Next
             </button>

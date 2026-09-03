@@ -38,25 +38,28 @@ export default function InvoiceCreateForm({
       initialState
     )
 
+  const inputClassName =
+    'w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-50'
+
   return (
     <form
       action={formAction}
-      className="mt-6 space-y-4"
+      className="mt-8 space-y-6"
     >
       {state.error && (
-        <div className="rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-400">
+        <div className="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-400">
           {state.error}
         </div>
       )}
 
       {state.success && (
-        <div className="rounded-md border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-700 dark:border-green-500/40 dark:bg-green-500/10 dark:text-green-400">
+        <div className="rounded-xl border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-700 dark:border-green-500/40 dark:bg-green-500/10 dark:text-green-400">
           Invoice created successfully.
         </div>
       )}
 
       <div>
-        <label className="mb-1 block text-sm font-medium">
+        <label className="mb-2 block text-sm font-semibold text-foreground">
           Subscription
         </label>
 
@@ -64,9 +67,14 @@ export default function InvoiceCreateForm({
           name="subscription_id"
           required
           disabled={isPending}
-          className="w-full rounded-md border bg-transparent p-3"
+          defaultValue=""
+          className={inputClassName}
         >
-          <option value="">
+          <option
+            value=""
+            disabled
+            className="bg-background text-muted-foreground"
+          >
             Select subscription
           </option>
 
@@ -75,6 +83,7 @@ export default function InvoiceCreateForm({
               <option
                 key={subscription.id}
                 value={subscription.id}
+                className="bg-background text-foreground"
               >
                 {subscription.customer_name} —{' '}
                 {subscription.plan_name}
@@ -85,7 +94,7 @@ export default function InvoiceCreateForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">
+        <label className="mb-2 block text-sm font-semibold text-foreground">
           Billing period start
         </label>
 
@@ -94,12 +103,12 @@ export default function InvoiceCreateForm({
           type="date"
           required
           disabled={isPending}
-          className="w-full rounded-md border bg-transparent p-3"
+          className={inputClassName}
         />
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">
+        <label className="mb-2 block text-sm font-semibold text-foreground">
           Billing period end
         </label>
 
@@ -108,29 +117,35 @@ export default function InvoiceCreateForm({
           type="date"
           required
           disabled={isPending}
-          className="w-full rounded-md border bg-transparent p-3"
+          className={inputClassName}
         />
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">
+        <label className="mb-2 block text-sm font-semibold text-foreground">
           Amount
         </label>
 
-        <input
-          name="amount"
-          type="number"
-          min="0.01"
-          step="0.01"
-          required
-          disabled={isPending}
-          placeholder="Enter invoice amount"
-          className="w-full rounded-md border bg-transparent p-3"
-        />
+        <div className="relative">
+          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium text-muted-foreground">
+            INR
+          </span>
+
+          <input
+            name="amount"
+            type="number"
+            min="0.01"
+            step="0.01"
+            required
+            disabled={isPending}
+            placeholder="0.00"
+            className={`${inputClassName} pl-14`}
+          />
+        </div>
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">
+        <label className="mb-2 block text-sm font-semibold text-foreground">
           Due date
         </label>
 
@@ -139,19 +154,21 @@ export default function InvoiceCreateForm({
           type="date"
           required
           disabled={isPending}
-          className="w-full rounded-md border bg-transparent p-3"
+          className={inputClassName}
         />
       </div>
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="rounded-md border px-5 py-2 font-medium transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-800"
-      >
-        {isPending
-          ? 'Creating Invoice...'
-          : 'Create Invoice'}
-      </button>
+      <div className="pt-2">
+        <button
+          type="submit"
+          disabled={isPending}
+          className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {isPending
+            ? 'Creating Invoice...'
+            : 'Create Invoice'}
+        </button>
+      </div>
     </form>
   )
 }

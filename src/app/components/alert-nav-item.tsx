@@ -54,7 +54,7 @@ export default function AlertNavItem() {
   return (
     <Link
       href="/alerts"
-      className="rounded-lg px-3 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
+      className="rounded-lg px-3 py-2 text-xs font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
     >
       Alerts
 
@@ -65,4 +65,4 @@ export default function AlertNavItem() {
       )}
     </Link>
   )
-}
+} 

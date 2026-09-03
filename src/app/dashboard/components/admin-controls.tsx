@@ -44,72 +44,139 @@ export default function AdminControls() {
   }
 
   return (
-    <section className="mt-8 rounded-lg border p-6">
-      <h2 className="text-xl font-semibold">
-        Admin Controls
-      </h2>
+    <form action={createSubscription} className="space-y-5">
+      {/* Customer name */}
+      <div>
+        <label
+          htmlFor="customer_name"
+          className="mb-2 block text-sm font-medium text-foreground"
+        >
+          Customer name
+        </label>
 
-      <p className="mt-2 text-sm text-gray-500">
-        Create a new subscription.
-      </p>
-
-      <form action={createSubscription} className="mt-6 space-y-4">
         <input
+          id="customer_name"
           name="customer_name"
-          placeholder="Customer name"
+          type="text"
+          placeholder="Enter customer name"
           required
-          className="w-full rounded-md border bg-transparent p-3"
+          className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
         />
+      </div>
+
+      {/* Billing email */}
+      <div>
+        <label
+          htmlFor="billing_email"
+          className="mb-2 block text-sm font-medium text-foreground"
+        >
+          Billing email
+        </label>
 
         <input
+          id="billing_email"
           name="billing_email"
           type="email"
-          placeholder="Billing email"
+          placeholder="customer@example.com"
           required
-          className="w-full rounded-md border bg-transparent p-3"
+          className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
         />
+      </div>
+
+      {/* Plan name */}
+      <div>
+        <label
+          htmlFor="plan_name"
+          className="mb-2 block text-sm font-medium text-foreground"
+        >
+          Plan name
+        </label>
 
         <input
+          id="plan_name"
           name="plan_name"
-          placeholder="Plan name"
+          type="text"
+          placeholder="e.g. Professional"
           required
-          className="w-full rounded-md border bg-transparent p-3"
+          className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
         />
+      </div>
+
+      {/* Billing cycle */}
+      <div>
+        <label
+          htmlFor="billing_cycle"
+          className="mb-2 block text-sm font-medium text-foreground"
+        >
+          Billing cycle
+        </label>
 
         <select
+          id="billing_cycle"
           name="billing_cycle"
           required
           defaultValue="MONTHLY"
-          className="w-full rounded-md border bg-transparent p-3"
+          className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
         >
           <option value="MONTHLY">Monthly</option>
           <option value="ANNUAL">Annual</option>
         </select>
+      </div>
+
+      {/* Price */}
+      <div>
+        <label
+          htmlFor="price"
+          className="mb-2 block text-sm font-medium text-foreground"
+        >
+          Price
+        </label>
+
+        <div className="relative">
+          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+            INR
+          </span>
+
+          <input
+            id="price"
+            name="price"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="0.00"
+            required
+            className="w-full rounded-xl border border-border bg-background py-3 pl-14 pr-4 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+          />
+        </div>
+      </div>
+
+      {/* Start date */}
+      <div>
+        <label
+          htmlFor="start_date"
+          className="mb-2 block text-sm font-medium text-foreground"
+        >
+          Start date
+        </label>
 
         <input
-          name="price"
-          type="number"
-          min="0"
-          step="0.01"
-          placeholder="Price"
-          required
-          className="w-full rounded-md border bg-transparent p-3"
-        />
-
-        <input
+          id="start_date"
           name="start_date"
           type="date"
           required
-          className="w-full rounded-md border bg-transparent p-3"
+          className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
         />
+      </div>
 
+      {/* Submit */}
+      <div className="pt-1">
         <button
           type="submit"
-          className="rounded-md border px-5 py-2 font-medium"
+          className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/30 active:scale-[0.99]"
         >
           Create Subscription
         </button>
-      </form>
-    </section>
+      </div>
+    </form>
   )
 }

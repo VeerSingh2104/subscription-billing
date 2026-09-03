@@ -118,6 +118,7 @@ export default async function InvoicesPage({
   /*
    * Search customer name OR billing email.
    */
+
   if (query) {
     const escapedQuery = query
       .replace(/\\/g, '\\\\')
@@ -132,6 +133,7 @@ export default async function InvoicesPage({
   /*
    * Filter by owning account manager.
    */
+
   if (owner !== 'ALL') {
     subscriptionQuery = subscriptionQuery.eq(
       'owner_id',
@@ -182,6 +184,7 @@ export default async function InvoicesPage({
    * If there are no matching subscriptions, there cannot
    * be any matching invoices.
    */
+
   if (subscriptionIds.length > 0) {
     let invoiceQuery = supabase
       .from('invoices')
@@ -206,6 +209,7 @@ export default async function InvoicesPage({
     /*
      * Status filter.
      */
+
     if (status !== 'ALL') {
       invoiceQuery = invoiceQuery.eq(
         'status',
@@ -221,6 +225,7 @@ export default async function InvoicesPage({
      * - it is not PAID
      * - it is not VOID
      */
+
     if (overdue) {
       const today = new Date()
         .toISOString()
@@ -235,6 +240,7 @@ export default async function InvoicesPage({
     /*
      * Server-side sorting.
      */
+
     invoiceQuery = invoiceQuery.order(
       sort,
       {
@@ -246,6 +252,7 @@ export default async function InvoicesPage({
     /*
      * Stable secondary sort.
      */
+
     invoiceQuery = invoiceQuery.order(
       'created_at',
       {
@@ -256,6 +263,7 @@ export default async function InvoicesPage({
     /*
      * Server-side pagination.
      */
+
     const from =
       (page - 1) * PAGE_SIZE
 
@@ -331,6 +339,7 @@ export default async function InvoicesPage({
    * If someone manually enters a page beyond
    * the available range, redirect to the last page.
    */
+
   if (
     totalMatches > 0 &&
     page > totalPages
@@ -408,60 +417,59 @@ export default async function InvoicesPage({
       <AppNavbar />
 
       <main className="min-h-screen bg-background text-foreground">
-        <div className="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-8 lg:py-10">
-          <header className="flex flex-col gap-4 border-b border-border pb-8 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mx-auto max-w-7xl px-5 py-6 sm:px-6 lg:px-8 lg:py-8">
+
+          {/* Page header */}
+          <header className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-semibold text-blue-600 dark:text-blue-300">
+              <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-300">
                 Billing activity
               </p>
 
-              <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+              <h1 className="mt-1.5 text-2xl font-bold tracking-tight">
                 Invoices
               </h1>
 
-              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+              <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground">
                 Search, filter and sort invoices across your billing portfolio.
               </p>
             </div>
 
             <div className="flex items-center gap-3">
-  <a
-    href="/api/invoices/receivables/csv"
-    className="inline-flex items-center rounded-xl border border-border bg-card px-4 py-3 text-sm font-semibold shadow-sm transition hover:bg-muted"
-  >
-    Export Receivables CSV
-  </a>
+              <a
+                href="/api/invoices/receivables/csv"
+                className="inline-flex items-center rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-semibold shadow-sm transition hover:bg-muted hover:shadow-md"
+              >
+                Export Receivables CSV
+              </a>
 
-  <div className="rounded-xl border border-border bg-card px-4 py-3 shadow-sm">
-    <p className="text-xs font-semibold uppercase text-muted-foreground">
-      Total matches
-    </p>
+              <div className="rounded-xl border border-border bg-card px-4 py-2.5 shadow-sm">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                  Total matches
+                </p>
 
-    <p className="mt-1 text-2xl font-bold">
-      {totalMatches}
-    </p>
-  </div>
-</div>
+                <p className="mt-0.5 text-xl font-bold">
+                  {totalMatches}
+                </p>
+              </div>
+            </div>
           </header>
 
+          {/* Content */}
           {invoiceError ? (
-            <div className="mt-8 rounded-xl border border-red-500/20 bg-red-500/10 p-5 text-sm text-red-700 dark:text-red-300">
+            <div className="mt-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-700 dark:text-red-300">
               Could not load invoices:{' '}
               {invoiceError.message}
             </div>
           ) : subscriptionError ? (
-            <div className="mt-8 rounded-xl border border-red-500/20 bg-red-500/10 p-5 text-sm text-red-700 dark:text-red-300">
+            <div className="mt-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-700 dark:text-red-300">
               Could not load subscriptions:{' '}
               {subscriptionError.message}
             </div>
           ) : (
             <InvoiceList
-              invoices={
-                invoicesWithSubscriptions
-              }
-              owners={
-                owners ?? []
-              }
+              invoices={invoicesWithSubscriptions}
+              owners={owners ?? []}
               query={query}
               status={status}
               overdue={overdue}
@@ -469,18 +477,10 @@ export default async function InvoicesPage({
               sort={sort}
               direction={direction}
               page={page}
-              totalMatches={
-                totalMatches
-              }
-              totalPages={
-                totalPages
-              }
-              currentFrom={
-                currentFrom
-              }
-              currentTo={
-                currentTo
-              }
+              totalMatches={totalMatches}
+              totalPages={totalPages}
+              currentFrom={currentFrom}
+              currentTo={currentTo}
             />
           )}
         </div>

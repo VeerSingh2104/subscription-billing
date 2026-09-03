@@ -36,7 +36,7 @@ export default function AppNavbar() {
     false
 
   const linkClass = (href: string) =>
-    `rounded-lg px-3 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20 ${
+    `rounded-lg px-3 py-2 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20 ${
       isActive(href)
         ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/20'
         : 'text-muted-foreground hover:bg-muted hover:text-foreground'
@@ -94,7 +94,7 @@ export default function AppNavbar() {
             aria-expanded={menuOpen}
             aria-controls="mobile-navigation"
             onClick={() => setMenuOpen((open) => !open)}
-            className="inline-flex h-10 items-center rounded-lg border border-border px-3 text-sm font-semibold transition hover:bg-muted focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20 md:hidden"
+            className="inline-flex h-10 items-center rounded-lg border border-border px-3 text-xs font-semibold transition hover:bg-muted focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20 md:hidden"
           >
             {menuOpen ? 'Close' : 'Menu'}
           </button>

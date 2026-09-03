@@ -7,6 +7,7 @@ import CreditNoteControls from '@/app/invoices/components/credit-note-controls'
 import InvoicePdfButton from '@/app/invoices/components/invoice-pdf-button'
 import Link from 'next/link'
 import InvoiceDueDateEditor from '@/app/invoices/components/invoice-due-date-editor'
+
 type InvoicePageProps = {
   params: Promise<{
     id: string
@@ -60,166 +61,300 @@ export default async function InvoiceDetailsPage({
 
   const canEditDueDate =
     isBillingAdmin || isSubscriptionOwner
-  
-    return (
-    <main className="p-10">
+
+  return (
+    <main className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
       {/* Back */}
       <Link
         href="/invoices"
-        className="text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white"
+        className="text-xs font-medium text-muted-foreground transition hover:text-foreground"
       >
         ← Back to Invoices
       </Link>
 
-      {/* Header */}
-<div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-  <div>
-    <h1 className="text-3xl font-bold">
-      Invoice Details
-    </h1>
+      {/* Invoice Hero */}
+      <section className="mt-4 overflow-hidden rounded-2xl border border-border border-t-4 border-t-blue-500 bg-card shadow-sm">
+        <div className="flex flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2.5">
+              <p className="text-xs font-semibold text-blue-600 dark:text-blue-300">
+                Invoice
+              </p>
 
-    <p className="mt-2 text-gray-500">
-      {invoice.subscriptions?.customer_name}
-    </p>
-  </div>
+              <span className="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-blue-600 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300">
+                {invoice.status}
+              </span>
+            </div>
 
-  <InvoicePdfButton invoiceId={invoice.id} />
-</div>
+            <h1 className="mt-1.5 truncate text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              {invoice.subscriptions?.customer_name}
+            </h1>
+
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {invoice.subscriptions?.plan_name}
+              <span className="mx-1.5">•</span>
+              {invoice.subscriptions?.billing_cycle}
+            </p>
+
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              Invoice #{invoice.id.slice(0, 8)}
+            </p>
+          </div>
+
+          <div className="flex shrink-0 items-center gap-3">
+            <div className="rounded-xl border border-border bg-background px-4 py-2.5 text-right">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                Invoice amount
+              </p>
+
+              <p className="mt-0.5 text-xl font-bold tracking-tight text-foreground">
+                INR {Number(invoice.amount).toFixed(2)}
+              </p>
+
+              <p className="text-xs text-muted-foreground">
+                Billing record
+              </p>
+            </div>
+
+            <InvoicePdfButton invoiceId={invoice.id} />
+          </div>
+        </div>
+      </section>
 
       {/* Invoice Information */}
-      <section className="mt-8 rounded-lg border p-6">
-        <h2 className="text-xl font-semibold">
-          Invoice Information
-        </h2>
+      <section className="mt-4 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+        <div className="border-b border-border bg-muted/10 px-5 py-3">
+          <p className="text-xs font-semibold text-blue-600 dark:text-blue-300">
+            Overview
+          </p>
 
-        <div className="mt-5 grid gap-5 md:grid-cols-2">
-          <div>
-            <p className="text-sm text-gray-500">
+          <h2 className="mt-0.5 text-base font-bold text-foreground">
+            Invoice information
+          </h2>
+
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            Billing details and payment information for this invoice.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4">
+          {/* Customer */}
+          <div className="border-b border-border p-3.5 lg:border-r">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
               Customer
             </p>
 
-            <p className="mt-1 font-medium">
+            <p className="mt-1 text-sm font-semibold text-foreground">
               {invoice.subscriptions?.customer_name}
             </p>
           </div>
 
-          <div>
-            <p className="text-sm text-gray-500">
+          {/* Plan */}
+          <div className="border-b border-border p-3.5 lg:border-r">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
               Plan
             </p>
 
-            <p className="mt-1 font-medium">
+            <p className="mt-1 text-sm font-semibold text-foreground">
               {invoice.subscriptions?.plan_name}
             </p>
           </div>
 
-          <div>
-            <p className="text-sm text-gray-500">
-              Billing Cycle
+          {/* Billing Cycle */}
+          <div className="border-b border-border p-3.5 lg:border-r">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+              Billing cycle
             </p>
 
-            <p className="mt-1 font-medium">
+            <p className="mt-1 text-sm font-semibold text-foreground">
               {invoice.subscriptions?.billing_cycle}
             </p>
           </div>
 
-          <div>
-            <p className="text-sm text-gray-500">
+          {/* Amount */}
+          <div className="border-b border-border p-3.5">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
               Amount
             </p>
 
-            <p className="mt-1 text-xl font-semibold">
-              ₹{invoice.amount}
+            <p className="mt-1 text-sm font-semibold text-foreground">
+              INR {Number(invoice.amount).toFixed(2)}
             </p>
           </div>
 
-          <div>
-            <p className="text-sm text-gray-500">
-              Billing Period
+          {/* Billing Period */}
+          <div className="border-b border-border p-3.5 lg:border-r">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+              Billing period
             </p>
 
-            <p className="mt-1 font-medium">
-              {invoice.billing_period_start} →{' '}
-              {invoice.billing_period_end}
+            <p className="mt-1 text-sm font-semibold text-foreground">
+              {invoice.billing_period_start}
+            </p>
+
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              through {invoice.billing_period_end}
             </p>
           </div>
 
-          <div>
-            <p className="text-sm text-gray-500">
-              Due Date
+          {/* Due Date */}
+          <div className="border-b border-border p-3.5 lg:border-r">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+              Due date
             </p>
-              
-            <p className="mt-1 font-medium">
+
+            <p className="mt-1 text-sm font-semibold text-foreground">
               {invoice.due_date}
             </p>
-              
+
             {canEditDueDate &&
               invoice.status !== 'PAID' &&
               invoice.status !== 'VOID' && (
-                <InvoiceDueDateEditor
-                  invoiceId={invoice.id}
-                  currentDueDate={invoice.due_date}
-                />
+                <div className="mt-1.5">
+                  <InvoiceDueDateEditor
+                    invoiceId={invoice.id}
+                    currentDueDate={invoice.due_date}
+                  />
+                </div>
               )}
           </div>
 
-          <div>
-            <p className="text-sm text-gray-500">
+          {/* Status */}
+          <div className="border-b border-border p-3.5 lg:border-r">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
               Status
             </p>
 
-            <p className="mt-1 font-semibold">
-              {invoice.status}
-            </p>
+            <div className="mt-1.5">
+              <span className="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-blue-600 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300">
+                {invoice.status}
+              </span>
+            </div>
           </div>
 
-          <div>
-            <p className="text-sm text-gray-500">
+          {/* Created */}
+          <div className="border-b border-border p-3.5 lg:border-b-0">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
               Created
             </p>
 
-            <p className="mt-1 font-medium">
-              {new Date(
-                invoice.created_at
-              ).toLocaleString()}
+            <p className="mt-1 text-sm font-semibold text-foreground">
+              {new Date(invoice.created_at).toLocaleDateString()}
+            </p>
+
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {new Date(invoice.created_at).toLocaleTimeString()}
             </p>
           </div>
+        </div>
+
+        {/* Invoice ID */}
+        <div className="flex flex-col gap-1 border-t border-border bg-muted/10 px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+            Invoice ID
+          </p>
+
+          <p className="break-all text-[9px] text-muted-foreground">
+            {invoice.id}
+          </p>
         </div>
       </section>
 
       {/* Status Controls */}
       {profile?.role === 'BILLING_ADMIN' && (
-        <section className="mt-6 rounded-lg border p-6">
-          <h2 className="text-xl font-semibold">
-            Invoice Status
-          </h2>
+        <section className="mt-4 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+          <div className="border-b border-border bg-muted/10 px-5 py-3">
+            <p className="text-xs font-semibold text-blue-600 dark:text-blue-300">
+              Actions
+            </p>
 
-          <InvoiceStatusControl
-            invoiceId={invoice.id}
-            currentStatus={invoice.status}
-          />
+            <h2 className="mt-0.5 text-base font-bold text-foreground">
+              Invoice status
+            </h2>
+
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              Manage the invoice lifecycle from draft through payment or void.
+            </p>
+          </div>
+
+          <div className="px-5 py-3">
+            <InvoiceStatusControl
+              invoiceId={invoice.id}
+              currentStatus={invoice.status}
+            />
+          </div>
         </section>
       )}
-        
+
       {/* Notes */}
-      <section className="mt-6 rounded-lg border p-6">
-        <InvoiceNotes invoiceId={invoice.id} />
+      <section className="mt-4 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+        <div className="border-b border-border bg-muted/10 px-5 py-3">
+          <p className="text-xs font-semibold text-blue-600 dark:text-blue-300">
+            Internal record
+          </p>
+
+          <h2 className="mt-0.5 text-base font-bold text-foreground">
+            Notes
+          </h2>
+
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            Keep operational notes attached to this invoice.
+          </p>
+        </div>
+
+        <div className="px-5 py-3">
+          <InvoiceNotes invoiceId={invoice.id} />
+        </div>
       </section>
 
       {/* Credit Notes */}
       {profile?.role === 'BILLING_ADMIN' && (
-        <section className="mt-6 rounded-lg border p-6">
-          <CreditNoteControls
-            invoiceId={invoice.id}
-            invoiceAmount={Number(invoice.amount)}
-          />
+        <section className="mt-4 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+          <div className="border-b border-border bg-muted/10 px-5 py-3">
+            <p className="text-xs font-semibold text-blue-600 dark:text-blue-300">
+              Corrections
+            </p>
+
+            <h2 className="mt-0.5 text-base font-bold text-foreground">
+              Credit notes
+            </h2>
+
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              Record billing corrections without changing the original invoice.
+            </p>
+          </div>
+
+          <div className="px-5 py-3">
+            <CreditNoteControls
+              invoiceId={invoice.id}
+              invoiceAmount={Number(invoice.amount)}
+            />
+          </div>
         </section>
       )}
 
       {/* History */}
-      <section className="mt-6 rounded-lg border p-6">
-        <InvoiceHistory invoiceId={invoice.id} />
+      <section className="mt-4 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+        <div className="border-b border-border bg-muted/10 px-5 py-3">
+          <p className="text-xs font-semibold text-blue-600 dark:text-blue-300">
+            Audit trail
+          </p>
+
+          <h2 className="mt-0.5 text-base font-bold text-foreground">
+            Invoice history
+          </h2>
+
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            A permanent record of invoice events and changes.
+          </p>
+        </div>
+
+        <div className="px-5 py-3">
+          <InvoiceHistory invoiceId={invoice.id} />
+        </div>
       </section>
+
+      <div className="h-4" />
     </main>
   )
 }

@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import LogoutButton from '@/app/components/logout-button'
-import ThemeToggle from '@/app/components/theme-toggle'
 import AdminControls from '@/app/dashboard/components/admin-controls'
 import InvoiceControls from '@/app/dashboard/components/invoice-controls'
 import BulkInvoiceGenerator from '@/app/components/bulk-invoice-generator'
@@ -29,13 +28,15 @@ export default async function DashboardPage({
     if (!user) {
         redirect('/login')
     }
+
     const params = await searchParams
-    
+
     const parsedWeek = Number.parseInt(params.week ?? '0', 10)
-    
+
     const weekOffset = Number.isFinite(parsedWeek)
         ? Math.max(-52, Math.min(52, parsedWeek))
         : 0
+
     const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('full_name, role')
@@ -122,555 +123,501 @@ export default async function DashboardPage({
 
     return (
         <>
-        <AppNavbar />
-        <main className="min-h-screen bg-background text-foreground">
-            <div className="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-8 lg:py-10">
+            <AppNavbar />
 
-                {/* ====================================================== */}
-                {/* HEADER */}
-                {/* ====================================================== */}
+            <main className="min-h-screen bg-background text-foreground">
+                <div className="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-8 lg:py-10">
 
-                <header className="border-b border-border pb-8">
-                    <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+                    {/* ====================================================== */}
+                    {/* HEADER */}
+                    {/* ====================================================== */}
 
-                        <div className="flex items-start gap-4">
+                    <header className="border-b border-border pb-8">
+                        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
 
-                            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-2xl font-bold text-white shadow-lg shadow-blue-600/20">
-                                B
-                            </div>
+                            <div className="flex items-start gap-4">
 
-                            <div className="min-w-0">
+                                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-2xl font-bold text-white shadow-lg shadow-blue-600/20">
+                                    B
+                                </div>
 
-                                <p className="text-sm font-medium text-blue-500">
-                                    Billing Platform
-                                </p>
+                                <div className="min-w-0">
 
-                                <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">
-                                    Dashboard
-                                </h1>
+                                    <p className="text-xs font-semibold text-blue-500">
+                                        Billing Platform
+                                    </p>
 
-                                <p className="mt-3 text-sm text-muted-foreground">
-                                    Welcome back,{' '}
-                                    <span className="font-semibold text-foreground">
-                                        {profile.full_name}
-                                    </span>
-                                </p>
+                                    <h1 className="mt-1 text-2xl font-bold tracking-tight">
+                                        Dashboard
+                                    </h1>
 
-                                <div className="mt-3 flex flex-wrap items-center gap-3">
+                                    <p className="mt-3 text-sm text-muted-foreground">
+                                        Welcome back,{' '}
+                                        <span className="font-semibold text-foreground">
+                                            {profile.full_name}
+                                        </span>
+                                    </p>
 
-                                    <span className="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-500">
-                                        {profile.role}
-                                    </span>
+                                    <div className="mt-3 flex flex-wrap items-center gap-3">
 
-                                    <span className="text-sm text-muted-foreground">
-                                        {user.email}
-                                    </span>
+                                        <span className="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-500">
+                                            {profile.role}
+                                        </span>
+
+                                        <span className="text-xs text-muted-foreground">
+                                            {user.email}
+                                        </span>
+
+                                    </div>
 
                                 </div>
+
                             </div>
+
+                            <div className="flex items-center gap-3">
+                                <Link
+                                    href="/invoices"
+                                    className="inline-flex items-center justify-center rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-semibold text-foreground shadow-sm transition hover:border-blue-500/30 hover:bg-muted"
+                                >
+                                    View invoices
+                                    <span className="ml-2">→</span>
+                                </Link>
+                            </div>
+
                         </div>
+                    </header>
 
-                        <div className="flex items-center gap-3">
-                            
-                        </div>
+                    {/* ====================================================== */}
+                    {/* FINANCIAL OVERVIEW */}
+                    {/* ====================================================== */}
 
-                    </div>
-                </header>
+                    <DashboardAnalytics weekOffset={weekOffset} />
 
-                {/* ====================================================== */}
-                {/* STATS */}
-                {/* ====================================================== */}
-                <DashboardAnalytics weekOffset={weekOffset} />
-                <section className="mt-8 grid gap-5 md:grid-cols-3">
+                    {/* ====================================================== */}
+                    {/* SUBSCRIPTIONS */}
+                    {/* ====================================================== */}
 
-                    {/* Active subscriptions */}
+                    <section className="mt-14">
 
-                    <div className="group rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-blue-500/30 hover:shadow-lg">
-
-                        <div className="flex items-start justify-between">
+                        <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
 
                             <div>
 
-                                <p className="text-sm font-medium text-muted-foreground">
-                                    Active Subscriptions
-                                </p>
+                                <div className="flex flex-wrap items-center gap-3">
 
-                                <p className="mt-3 text-4xl font-bold tracking-tight">
-                                    {subscriptionCount}
-                                </p>
+                                    <h2 className="text-base font-bold">
+                                        Subscriptions
+                                    </h2>
 
-                            </div>
+                                    <span className="rounded-full border border-blue-500/15 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-500">
+                                        {subscriptionCount} total
+                                    </span>
 
-                            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500/10 text-lg font-bold text-blue-500">
-                                $
-                            </div>
-
-                        </div>
-
-                        <p className="mt-4 text-xs text-muted-foreground">
-                            Subscriptions available to your account
-                        </p>
-
-                    </div>
-
-                    {/* Account role */}
-
-                    <div className="group rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-purple-500/30 hover:shadow-lg">
-
-                        <div className="flex items-start justify-between">
-
-                            <div className="min-w-0">
-
-                                <p className="text-sm font-medium text-muted-foreground">
-                                    Account Role
-                                </p>
-
-                                <p className="mt-3 truncate text-2xl font-bold">
-                                    {profile.role}
-                                </p>
-
-                            </div>
-
-                            <div className="ml-4 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-500/10 text-lg text-purple-500">
-                                ✓
-                            </div>
-
-                        </div>
-
-                        <p className="mt-4 text-xs text-muted-foreground">
-                            Your current access level
-                        </p>
-
-                    </div>
-
-                    {/* Account */}
-
-                    <div className="group rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-emerald-500/30 hover:shadow-lg">
-
-                        <div className="flex items-start justify-between">
-
-                            <div className="min-w-0">
-
-                                <p className="text-sm font-medium text-muted-foreground">
-                                    Account
-                                </p>
-
-                                <p className="mt-3 truncate text-sm font-semibold">
-                                    {user.email}
-                                </p>
-
-                            </div>
-
-                            <div className="ml-4 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-lg font-bold text-emerald-500">
-                                @
-                            </div>
-
-                        </div>
-
-                        <p className="mt-4 text-xs text-muted-foreground">
-                            Signed in account
-                        </p>
-
-                    </div>
-
-                </section>
-
-                {/* ====================================================== */}
-                {/* SUBSCRIPTIONS */}
-                {/* ====================================================== */}
-
-                <section className="mt-14">
-
-                    <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-
-                        <div>
-
-                            <div className="flex flex-wrap items-center gap-3">
-
-                                <h2 className="text-2xl font-bold tracking-tight">
-                                    Subscriptions
-                                </h2>
-
-                                <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
-                                    {subscriptionCount} total
-                                </span>
-
-                            </div>
-
-                            <p className="mt-2 text-sm text-muted-foreground">
-                                Manage and review your customer subscriptions.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    {/* Error */}
-
-                    {subscriptionsError && (
-                        <div className="mb-6 rounded-2xl border border-red-500/20 bg-red-500/5 p-5">
-
-                            <p className="text-sm font-semibold text-red-500">
-                                Unable to load subscriptions
-                            </p>
-
-                            <p className="mt-1 text-sm text-red-500/80">
-                                {subscriptionsError.message}
-                            </p>
-
-                        </div>
-                    )}
-
-                    {/* Empty state */}
-
-                    {!subscriptionsError &&
-                        subscriptionsWithCollaborators.length === 0 && (
-                            <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center">
-
-                                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-xl">
-                                    $
                                 </div>
 
-                                <h3 className="mt-4 font-semibold">
-                                    No subscriptions found
-                                </h3>
-
                                 <p className="mt-2 text-sm text-muted-foreground">
-                                    There are currently no subscriptions
-                                    associated with your account.
+                                    Monitor customer plans, billing cycles, and ownership.
+                                </p>
+
+                            </div>
+
+                            <Link
+                                href="/subscriptions"
+                                className="inline-flex items-center justify-center rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-semibold text-foreground shadow-sm transition hover:border-blue-500/30 hover:bg-muted"
+                            >
+                                Manage all
+                                <span className="ml-2">→</span>
+                            </Link>
+
+                        </div>
+
+                        {/* Error */}
+
+                        {subscriptionsError && (
+                            <div className="mb-6 rounded-2xl border border-red-500/20 bg-red-500/5 p-5">
+
+                                <p className="text-sm font-semibold text-red-500">
+                                    Unable to load subscriptions
+                                </p>
+
+                                <p className="mt-1 text-sm text-red-500/80">
+                                    {subscriptionsError.message}
                                 </p>
 
                             </div>
                         )}
 
-                    {/* Subscription cards */}
+                        {/* Empty state */}
 
-                    <div className="grid gap-6 lg:grid-cols-2">
+                        {!subscriptionsError &&
+                            subscriptionsWithCollaborators.length === 0 && (
+                                <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center">
 
-                        {subscriptionsWithCollaborators.map((subscription) => (
-
-                            <div
-                                key={subscription.id}
-                                className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:shadow-xl"
-                            >
-
-                                {/* Top accent */}
-
-                                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-80" />
-
-                                {/* Main card */}
-
-                                <div className="p-6 pt-7">
-
-                                    {/* Card header */}
-
-                                    <div className="flex items-start justify-between gap-4">
-
-                                        <div className="min-w-0">
-
-                                            <div className="mb-3 flex items-center gap-2">
-
-                                                <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-500">
-                                                    Customer
-                                                </span>
-
-                                                <span className="h-1 w-1 rounded-full bg-muted-foreground/40" />
-
-                                                <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                                                    Subscription
-                                                </span>
-
-                                            </div>
-
-                                            <h3 className="truncate text-xl font-bold tracking-tight">
-                                                {subscription.customer_name}
-                                            </h3>
-
-                                            <p className="mt-1 text-sm text-muted-foreground">
-                                                {subscription.plan_name}
-                                            </p>
-
-                                        </div>
-
-                                        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-500">
-
-                                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-
-                                            {subscription.status || 'Active'}
-
-                                        </span>
-
+                                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-xl">
+                                        $
                                     </div>
 
-                                    {/* Price */}
+                                    <h3 className="mt-4 text-sm font-semibold">
+                                        No subscriptions found
+                                    </h3>
 
-                                    <div className="mt-8 rounded-2xl border border-border bg-muted/30 p-5">
-
-                                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                                            Subscription Price
-                                        </p>
-
-                                        <div className="mt-2 flex items-baseline gap-2">
-
-                                            <span className="text-3xl font-bold tracking-tight">
-                                                ₹{subscription.price}
-                                            </span>
-
-                                            <span className="text-sm text-muted-foreground">
-                                                / {subscription.billing_cycle?.toLowerCase()}
-                                            </span>
-
-                                        </div>
-
-                                    </div>
-
-                                    {/* Details */}
-
-                                    <div className="mt-5 grid grid-cols-2 gap-4">
-
-                                        <div className="rounded-xl border border-border bg-background/50 p-4">
-
-                                            <div className="flex items-center gap-2">
-
-                                                <div className="h-2 w-2 rounded-full bg-blue-500" />
-
-                                                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                                                    Billing Cycle
-                                                </p>
-
-                                            </div>
-
-                                            <p className="mt-3 text-sm font-bold">
-                                                {subscription.billing_cycle}
-                                            </p>
-
-                                        </div>
-
-                                        <div className="rounded-xl border border-border bg-background/50 p-4">
-
-                                            <div className="flex items-center gap-2">
-
-                                                <div className="h-2 w-2 rounded-full bg-purple-500" />
-
-                                                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                                                    Started
-                                                </p>
-
-                                            </div>
-
-                                            <p className="mt-3 text-sm font-bold">
-                                                {subscription.start_date}
-                                            </p>
-
-                                        </div>
-                                        <div className="mt-6">
-                                            <Link
-                                                href={`/subscriptions/${subscription.id}`}
-                                                className="inline-flex w-full items-center justify-center rounded-xl border border-border px-4 py-3 text-sm font-semibold transition hover:bg-muted"
-                                            >
-                                                View Subscription
-                                            </Link>
-                                        </div>
-                                    </div>
+                                    <p className="mt-2 text-sm text-muted-foreground">
+                                        There are currently no subscriptions
+                                        associated with your account.
+                                    </p>
 
                                 </div>
+                            )}
 
-                                {/* Account manager */}
+                        {/* Subscription cards */}
 
-                                {profile.role === 'BILLING_ADMIN' && (
+                        <div className="grid gap-6 lg:grid-cols-2">
 
-                                    <div className="border-t border-border bg-muted/10 px-6 py-6">
+                            {subscriptionsWithCollaborators.map((subscription) => (
 
-                                        <div className="mb-5 flex items-start justify-between gap-4">
+                                <div
+                                    key={subscription.id}
+                                    className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:shadow-xl"
+                                >
 
-                                            <div>
+                                    {/* Top accent */}
 
-                                                <div className="flex items-center gap-2">
+                                    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-80" />
 
-                                                    <h4 className="text-sm font-bold">
-                                                        Account Manager
-                                                    </h4>
+                                    {/* Main card */}
 
-                                                    <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] font-semibold text-blue-500">
-                                                        ADMIN
+                                    <div className="p-5 pt-6 sm:p-6 sm:pt-7">
+
+                                        {/* Card header */}
+
+                                        <div className="flex items-start justify-between gap-4">
+
+                                            <div className="min-w-0">
+
+                                                <div className="mb-3 flex items-center gap-2">
+
+                                                    <span className="text-[10px] font-semibold uppercase tracking-wide text-blue-500">
+                                                        Customer
+                                                    </span>
+
+                                                    <span className="h-1 w-1 rounded-full bg-muted-foreground/40" />
+
+                                                    <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                                                        Subscription
                                                     </span>
 
                                                 </div>
 
-                                                <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                                                    Assign or manage the manager responsible
-                                                    for this subscription.
+                                                <h3 className="truncate text-sm font-semibold">
+                                                    {subscription.customer_name}
+                                                </h3>
+
+                                                <p className="mt-1 text-sm text-muted-foreground">
+                                                    {subscription.plan_name}
+                                                </p>
+
+                                            </div>
+
+                                            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-500">
+
+                                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+
+                                                {subscription.status || 'Active'}
+
+                                            </span>
+
+                                        </div>
+
+                                        {/* Price */}
+
+                                        <div className="mt-6 rounded-2xl border border-border bg-muted/30 p-4 sm:p-5">
+
+                                            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                                                Subscription Price
+                                            </p>
+
+                                            <div className="mt-2 flex items-baseline gap-2">
+
+                                                <span className="text-xl font-bold tracking-tight">
+                                                    ₹{subscription.price}
+                                                </span>
+
+                                                <span className="text-xs text-muted-foreground">
+                                                    / {subscription.billing_cycle?.toLowerCase()}
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+                                        {/* Details */}
+
+                                        <div className="mt-4 grid grid-cols-2 gap-3">
+
+                                            <div className="rounded-xl border border-border bg-background/50 p-3.5">
+
+                                                <div className="flex items-center gap-2">
+
+                                                    <div className="h-2 w-2 rounded-full bg-blue-500" />
+
+                                                    <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                                                        Billing Cycle
+                                                    </p>
+
+                                                </div>
+
+                                                <p className="mt-3 text-sm font-semibold">
+                                                    {subscription.billing_cycle}
+                                                </p>
+
+                                            </div>
+
+                                            <div className="rounded-xl border border-border bg-background/50 p-3.5">
+
+                                                <div className="flex items-center gap-2">
+
+                                                    <div className="h-2 w-2 rounded-full bg-purple-500" />
+
+                                                    <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                                                        Started
+                                                    </p>
+
+                                                </div>
+
+                                                <p className="mt-3 text-sm font-semibold">
+                                                    {subscription.start_date}
                                                 </p>
 
                                             </div>
 
                                         </div>
 
-                                        <CollaboratorControl
-                                            subscriptionId={subscription.id}
-                                            collaborators={subscription.collaborators ?? []}
-                                            availableManagers={managerProfiles}
-                                            managersLoadError={managerProfilesError}
-                                        />
+                                        <div className="mt-5">
+
+                                            <Link
+                                                href={`/subscriptions/${subscription.id}`}
+                                                className="inline-flex w-full items-center justify-center rounded-xl border border-border px-4 py-3 text-xs font-semibold transition hover:border-blue-500/30 hover:bg-muted"
+                                            >
+                                                View Subscription
+                                                <span className="ml-2">→</span>
+                                            </Link>
+
+                                        </div>
 
                                     </div>
 
-                                )}
+                                    {/* Account manager */}
 
-                            </div>
+                                    {profile.role === 'BILLING_ADMIN' && (
 
-                        ))}
+                                        <div className="border-t border-border bg-muted/10 px-6 py-6">
 
-                    </div>
+                                            <div className="mb-5 flex items-start justify-between gap-4">
 
-                </section>
+                                                <div>
 
-                {/* ====================================================== */}
-                {/* ADMINISTRATION */}
-                {/* ====================================================== */}
-                        
-                {profile.role === 'BILLING_ADMIN' ? (
+                                                    <div className="flex items-center gap-2">
 
-                    <section className="mt-16">
+                                                        <h4 className="text-sm font-semibold">
+                                                            Account Manager
+                                                        </h4>
 
-                        <div className="mb-7">
+                                                        <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] font-semibold text-blue-500">
+                                                            ADMIN
+                                                        </span>
 
-                            <div className="flex flex-wrap items-center gap-3">
+                                                    </div>
 
-                                <h2 className="text-2xl font-bold tracking-tight">
-                                    Administration
-                                </h2>
+                                                    <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                                                        Assign or manage the manager responsible
+                                                        for this subscription.
+                                                    </p>
 
-                                <span className="rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-500">
-                                    Admin
-                                </span>
+                                                </div>
 
-                            </div>
+                                            </div>
 
-                            <p className="mt-2 text-sm text-muted-foreground">
-                                Billing administration and invoice management.
-                            </p>
+                                            <CollaboratorControl
+                                                subscriptionId={subscription.id}
+                                                collaborators={subscription.collaborators ?? []}
+                                                availableManagers={managerProfiles}
+                                                managersLoadError={managerProfilesError}
+                                            />
 
-                        </div>
+                                        </div>
 
-                        {/* Subscription Management */}
-
-                        <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-
-                            <div className="border-b border-border bg-muted/10 px-6 py-5">
-
-                                <div className="flex items-center gap-4">
-
-                                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-xl font-bold text-blue-500">
-                                        +
-                                    </div>
-
-                                    <div>
-
-                                        <h3 className="font-bold">
-                                            Subscription Management
-                                        </h3>
-
-                                        <p className="mt-1 text-xs text-muted-foreground">
-                                            Create and manage customer subscriptions.
-                                        </p>
-
-                                    </div>
+                                    )}
 
                                 </div>
 
-                            </div>
-
-                            <div className="p-6">
-                                <AdminControls />
-                            </div>
-
-                        </div>
-
-                        {/* Invoice Management */}
-
-                        <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-
-                            <div className="border-b border-border bg-muted/10 px-6 py-5">
-
-                                <div className="flex items-center gap-4">
-
-                                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-lg font-bold text-emerald-500">
-                                        ₹
-                                    </div>
-
-                                    <div>
-
-                                        <h3 className="font-bold">
-                                            Invoice Management
-                                        </h3>
-
-                                        <p className="mt-1 text-xs text-muted-foreground">
-                                            Create invoices for existing subscriptions.
-                                        </p>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <div className="p-6">
-                                <InvoiceControls />
-                                <div className="border-t border-border pt-8">
-                                    <div className="mb-5">
-                                        <h4 className="font-bold">
-                                            Bulk Invoice Generation
-                                        </h4>
-
-                                        <p className="mt-1 text-xs text-muted-foreground">
-                                            Generate the current billing period across all active subscriptions.
-                                        </p>
-                                    </div>     
-                                    <BulkInvoiceGenerator />
-                                </div>
-                            </div>
+                            ))}
 
                         </div>
 
                     </section>
 
-                ) : (
+                    {/* ====================================================== */}
+                    {/* ADMINISTRATION */}
+                    {/* ====================================================== */}
 
-                    <section className="mt-16">
+                    {profile.role === 'BILLING_ADMIN' ? (
 
-                        <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
+                        <section className="mt-14">
 
-                            <div className="flex items-start gap-4">
+                            <div className="mb-6">
 
-                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-xl text-blue-500">
-                                    →
-                                </div>
+                                <div className="flex flex-wrap items-center gap-3">
 
-                                <div>
-
-                                    <h2 className="text-xl font-bold">
-                                        Account Manager
+                                    <h2 className="text-base font-bold">
+                                        Administration
                                     </h2>
 
-                                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                                        Account management tools will appear here.
-                                        Your available tools depend on your assigned
-                                        permissions.
-                                    </p>
+                                    <span className="rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-500">
+                                        Admin
+                                    </span>
+
+                                </div>
+
+                                <p className="mt-2 text-sm text-muted-foreground">
+                                    Billing administration and invoice management.
+                                </p>
+
+                            </div>
+
+                            {/* Subscription Management */}
+
+                            <details className="group overflow-hidden rounded-2xl border border-border bg-card">
+
+                                <summary className="flex cursor-pointer list-none items-center justify-between px-6 py-5 transition hover:bg-muted/40 [&::-webkit-details-marker]:hidden">
+
+                                    <div className="flex items-center gap-4">
+
+                                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500/10 text-xl font-semibold text-blue-600">
+                                            +
+                                        </div>
+
+                                        <div>
+
+                                            <h3 className="text-sm font-semibold text-foreground">
+                                                Subscription Management
+                                            </h3>
+
+                                            <p className="mt-1 text-xs text-muted-foreground">
+                                                Create and manage customer subscriptions.
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground transition-transform duration-200 group-open:rotate-180">
+                                        ↓
+                                    </div>
+
+                                </summary>
+
+                                <div className="border-t border-border px-6 py-6">
+                                    <AdminControls />
+                                </div>
+
+                            </details>
+
+                            {/* Invoice Management */}
+
+                            <details className="group mt-4 overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow duration-200 hover:shadow-md">
+
+                                <summary className="flex cursor-pointer list-none items-center justify-between border-b border-border bg-muted/10 px-6 py-5 transition hover:bg-muted/20 [&::-webkit-details-marker]:hidden">
+
+                                    <div className="flex items-center gap-4">
+
+                                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-lg font-bold text-emerald-500">
+                                            ₹
+                                        </div>
+
+                                        <div>
+
+                                            <h3 className="text-sm font-semibold">
+                                                Invoice Management
+                                            </h3>
+
+                                            <p className="mt-1 text-xs text-muted-foreground">
+                                                Create invoices for existing subscriptions.
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-xs text-muted-foreground transition-transform duration-200 group-open:rotate-180">
+                                        ↓
+                                    </div>
+
+                                </summary>
+
+                                <div className="p-6">
+
+                                    <InvoiceControls />
+
+                                    <div className="mt-8 border-t border-border pt-8">
+
+                                        <div className="mb-5">
+
+                                            <h4 className="text-sm font-semibold">
+                                                Bulk Invoice Generation
+                                            </h4>
+
+                                            <p className="mt-1 text-xs text-muted-foreground">
+                                                Generate the current billing period across all active subscriptions.
+                                            </p>
+
+                                        </div>
+
+                                        <BulkInvoiceGenerator />
+
+                                    </div>
+
+                                </div>
+
+                            </details>
+
+                        </section>
+
+                    ) : (
+
+                        <section className="mt-14">
+
+                            <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
+
+                                <div className="flex items-start gap-4">
+
+                                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-xl text-blue-500">
+                                        →
+                                    </div>
+
+                                    <div>
+
+                                        <h2 className="text-base font-bold">
+                                            Account Manager
+                                        </h2>
+
+                                        <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                                            Account management tools will appear here.
+                                            Your available tools depend on your assigned
+                                            permissions.
+                                        </p>
+
+                                    </div>
 
                                 </div>
 
                             </div>
 
-                        </div>
+                        </section>
 
-                    </section>
+                    )}
 
-                )}
-
-            </div>
-        </main>
+                </div>
+            </main>
         </>
     )
 }

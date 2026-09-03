@@ -23,6 +23,24 @@ export type AlertWithInvoice = {
   }
 }
 
+export type AlertHistoryItem = {
+  id: string
+  invoice_id: string
+  alert_type: string
+  due_date: string
+  created_at: string
+  dismissed_at: string | null
+  invoice: {
+    id: string
+    amount: number | string
+    status: 'DRAFT' | 'ISSUED' | 'PAID' | 'VOID'
+    subscription: {
+      customer_name: string
+      plan_name: string
+    }
+  }
+}
+
 async function requireBillingAdmin() {
   const supabase = await createClient()
 
@@ -58,32 +76,11 @@ function getToday() {
   return new Date().toISOString().split('T')[0]
 }
 
-/**
- * Makes sure every currently overdue invoice has an active alert.
- *
- * Alert behavior:
- *
- * 1. First time an invoice becomes overdue:
- *    -> create an alert.
- *
- * 2. Existing active alert:
- *    -> do nothing.
- *
- * 3. Existing dismissed alert with no invoice changes:
- *    -> do nothing.
- *
- * 4. Invoice was changed after the alert was dismissed and
- *    is overdue again:
- *    -> create a new active alert.
- *
- * The invoice's updated_at timestamp is used to determine
- * whether the invoice changed after the previous dismissal.
- */
 export async function syncOverdueAlerts() {
   const { supabase } = await requireBillingAdmin()
 
   const today = getToday()
-  // console.log('ALERT DEBUG - today:', today)
+
   const {
     data: overdueInvoices,
     error: invoiceError,
@@ -101,10 +98,7 @@ export async function syncOverdueAlerts() {
   if (invoiceError) {
     throw new Error(invoiceError.message)
   }
-  // console.log(
-  //   'ALERT DEBUG - overdue invoices:',
-  //   overdueInvoices
-  // )
+
   if (!overdueInvoices || overdueInvoices.length === 0) {
     return
   }
@@ -145,10 +139,6 @@ export async function syncOverdueAlerts() {
       (alert) => alert.invoice_id === invoice.id
     )
 
-    /*
-     * No previous alert exists for this invoice.
-     * Create the first overdue alert.
-     */
     if (invoiceAlerts.length === 0) {
       const { error } = await supabase
         .from('alerts')
@@ -166,26 +156,12 @@ export async function syncOverdueAlerts() {
       continue
     }
 
-    /*
-     * The alerts are ordered newest first, so the first
-     * alert is the latest alert for this invoice.
-     */
     const latestAlert = invoiceAlerts[0]
 
-    /*
-     * An active alert already exists.
-     * Nothing needs to be created.
-     */
     if (!latestAlert.is_dismissed) {
       continue
     }
 
-    /*
-     * The latest alert was dismissed.
-     *
-     * If the invoice has not changed since the dismissal,
-     * this is still the same overdue occurrence.
-     */
     if (
       latestAlert.dismissed_at &&
       new Date(invoice.updated_at) <=
@@ -194,12 +170,6 @@ export async function syncOverdueAlerts() {
       continue
     }
 
-    /*
-     * The invoice was changed after the previous alert
-     * was dismissed and is currently overdue again.
-     *
-     * Create a new active alert.
-     */
     const { error } = await supabase
       .from('alerts')
       .insert({
@@ -215,9 +185,6 @@ export async function syncOverdueAlerts() {
   }
 }
 
-/**
- * Returns all currently active overdue alerts.
- */
 export async function getOverdueAlerts(): Promise<
   AlertWithInvoice[]
 > {
@@ -291,20 +258,78 @@ export async function getOverdueAlerts(): Promise<
 }
 
 /**
- * Returns the number shown in the navigation badge.
+ * Returns dismissed overdue alerts.
+ *
+ * Alert records are never deleted, so this provides
+ * a persistent history of previous overdue alerts.
  */
+export async function getAlertHistory(): Promise<
+  AlertHistoryItem[]
+> {
+  const { supabase } = await requireBillingAdmin()
+
+  const {
+    data,
+    error,
+  } = await supabase
+    .from('alerts')
+    .select(`
+      id,
+      invoice_id,
+      alert_type,
+      due_date,
+      created_at,
+      dismissed_at,
+      is_dismissed,
+      invoices!inner (
+        id,
+        amount,
+        status,
+        subscriptions!inner (
+          customer_name,
+          plan_name
+        )
+      )
+    `)
+    .eq('alert_type', 'OVERDUE')
+    .eq('is_dismissed', true)
+    .order('dismissed_at', {
+      ascending: false,
+    })
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return (data ?? []).map((alert: any) => ({
+    id: alert.id,
+    invoice_id: alert.invoice_id,
+    alert_type: alert.alert_type,
+    due_date: alert.due_date,
+    created_at: alert.created_at,
+    dismissed_at: alert.dismissed_at,
+
+    invoice: {
+      id: alert.invoices.id,
+      amount: alert.invoices.amount,
+      status: alert.invoices.status,
+
+      subscription: {
+        customer_name:
+          alert.invoices.subscriptions.customer_name,
+        plan_name:
+          alert.invoices.subscriptions.plan_name,
+      },
+    },
+  }))
+}
+
 export async function getOverdueAlertCount() {
   const alerts = await getOverdueAlerts()
 
   return alerts.length
 }
 
-/**
- * Dismisses an overdue alert.
- *
- * The alert record is deliberately kept in the database.
- * Only its active/dismissed state changes.
- */
 export async function dismissOverdueAlert(
   alertId: string
 ) {

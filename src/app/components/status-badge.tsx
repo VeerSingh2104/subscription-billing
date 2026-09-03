@@ -23,7 +23,7 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
 
   return (
     <span
-      className={`inline-flex shrink-0 items-center rounded-full border px-3 py-1 text-xs font-semibold ${style}`}
+      className={`inline-flex shrink-0 items-center rounded-full border px-3 py-1 text-[10px] font-semibold ${style}`}
     >
       {label}
     </span>

@@ -27,11 +27,11 @@ export default async function SubscriptionsPage() {
         <div className="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-8 lg:py-10">
           <header className="flex flex-col gap-4 border-b border-border pb-8 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-semibold text-blue-600 dark:text-blue-300">
+              <p className="text-xs font-semibold text-blue-600 dark:text-blue-300">
                 Customer contracts
               </p>
 
-              <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+              <h1 className="mt-2 text-2xl font-bold tracking-tight">
                 Subscriptions
               </h1>
 
@@ -41,10 +41,11 @@ export default async function SubscriptionsPage() {
             </div>
 
             <div className="rounded-xl border border-border bg-card px-4 py-3 shadow-sm">
-              <p className="text-xs font-semibold uppercase text-muted-foreground">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                 Total
               </p>
-              <p className="mt-1 text-2xl font-bold">
+
+              <p className="mt-1 text-xl font-bold">
                 {subscriptions?.length ?? 0}
               </p>
             </div>
@@ -58,7 +59,8 @@ export default async function SubscriptionsPage() {
             <SubscriptionList subscriptions={subscriptions} />
           ) : (
             <div className="mt-8 rounded-xl border border-dashed border-border bg-card p-12 text-center">
-              <p className="font-semibold">No subscriptions found</p>
+              <p className="text-sm font-semibold">No subscriptions found</p>
+
               <p className="mt-2 text-sm text-muted-foreground">
                 New customer subscriptions will appear here.
               </p>
