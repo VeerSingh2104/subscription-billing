@@ -6,6 +6,7 @@ import InvoiceNotes from '@/app/invoices/components/invoice-notes'
 import CreditNoteControls from '@/app/invoices/components/credit-note-controls'
 import InvoicePdfButton from '@/app/invoices/components/invoice-pdf-button'
 import Link from 'next/link'
+import InvoiceDueDateEditor from '@/app/invoices/components/invoice-due-date-editor'
 type InvoicePageProps = {
   params: Promise<{
     id: string
@@ -40,7 +41,8 @@ export default async function InvoiceDetailsPage({
       subscriptions (
         customer_name,
         plan_name,
-        billing_cycle
+        billing_cycle,
+        owner_id
       )
     `)
     .eq('id', id)
@@ -50,7 +52,16 @@ export default async function InvoiceDetailsPage({
     notFound()
   }
 
-  return (
+  const isBillingAdmin =
+    profile?.role === 'BILLING_ADMIN'
+
+  const isSubscriptionOwner =
+    invoice.subscriptions?.owner_id === user.id
+
+  const canEditDueDate =
+    isBillingAdmin || isSubscriptionOwner
+  
+    return (
     <main className="p-10">
       {/* Back */}
       <Link
@@ -137,10 +148,19 @@ export default async function InvoiceDetailsPage({
             <p className="text-sm text-gray-500">
               Due Date
             </p>
-
+              
             <p className="mt-1 font-medium">
               {invoice.due_date}
             </p>
+              
+            {canEditDueDate &&
+              invoice.status !== 'PAID' &&
+              invoice.status !== 'VOID' && (
+                <InvoiceDueDateEditor
+                  invoiceId={invoice.id}
+                  currentDueDate={invoice.due_date}
+                />
+              )}
           </div>
 
           <div>

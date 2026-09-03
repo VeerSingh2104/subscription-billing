@@ -424,15 +424,24 @@ export default async function InvoicesPage({
               </p>
             </div>
 
-            <div className="rounded-xl border border-border bg-card px-4 py-3 shadow-sm">
-              <p className="text-xs font-semibold uppercase text-muted-foreground">
-                Total matches
-              </p>
+            <div className="flex items-center gap-3">
+  <a
+    href="/api/invoices/receivables/csv"
+    className="inline-flex items-center rounded-xl border border-border bg-card px-4 py-3 text-sm font-semibold shadow-sm transition hover:bg-muted"
+  >
+    Export Receivables CSV
+  </a>
 
-              <p className="mt-1 text-2xl font-bold">
-                {totalMatches}
-              </p>
-            </div>
+  <div className="rounded-xl border border-border bg-card px-4 py-3 shadow-sm">
+    <p className="text-xs font-semibold uppercase text-muted-foreground">
+      Total matches
+    </p>
+
+    <p className="mt-1 text-2xl font-bold">
+      {totalMatches}
+    </p>
+  </div>
+</div>
           </header>
 
           {invoiceError ? (

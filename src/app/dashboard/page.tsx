@@ -4,16 +4,22 @@ import LogoutButton from '@/app/components/logout-button'
 import ThemeToggle from '@/app/components/theme-toggle'
 import AdminControls from '@/app/dashboard/components/admin-controls'
 import InvoiceControls from '@/app/dashboard/components/invoice-controls'
+import BulkInvoiceGenerator from '@/app/components/bulk-invoice-generator'
 import CollaboratorControl from '@/app/dashboard/components/collaborator-control'
 import AppNavbar from '@/app/components/app-navbar'
 import Link from 'next/link'
+import DashboardAnalytics from './components/dashboard-analytics'
 
 type AccountManager = {
     id: string
     full_name: string | null
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ week?: string }>
+}) {
     const supabase = await createClient()
 
     const {
@@ -23,7 +29,13 @@ export default async function DashboardPage() {
     if (!user) {
         redirect('/login')
     }
-
+    const params = await searchParams
+    
+    const parsedWeek = Number.parseInt(params.week ?? '0', 10)
+    
+    const weekOffset = Number.isFinite(parsedWeek)
+        ? Math.max(-52, Math.min(52, parsedWeek))
+        : 0
     const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('full_name, role')
@@ -168,7 +180,7 @@ export default async function DashboardPage() {
                 {/* ====================================================== */}
                 {/* STATS */}
                 {/* ====================================================== */}
-
+                <DashboardAnalytics weekOffset={weekOffset} />
                 <section className="mt-8 grid gap-5 md:grid-cols-3">
 
                     {/* Active subscriptions */}
@@ -452,13 +464,13 @@ export default async function DashboardPage() {
 
                                         </div>
                                         <div className="mt-6">
-    <Link
-        href={`/subscriptions/${subscription.id}`}
-        className="inline-flex w-full items-center justify-center rounded-xl border border-border px-4 py-3 text-sm font-semibold transition hover:bg-muted"
-    >
-        View Subscription
-    </Link>
-</div>
+                                            <Link
+                                                href={`/subscriptions/${subscription.id}`}
+                                                className="inline-flex w-full items-center justify-center rounded-xl border border-border px-4 py-3 text-sm font-semibold transition hover:bg-muted"
+                                            >
+                                                View Subscription
+                                            </Link>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -516,7 +528,7 @@ export default async function DashboardPage() {
                 {/* ====================================================== */}
                 {/* ADMINISTRATION */}
                 {/* ====================================================== */}
-
+                        
                 {profile.role === 'BILLING_ADMIN' ? (
 
                     <section className="mt-16">
@@ -605,6 +617,18 @@ export default async function DashboardPage() {
 
                             <div className="p-6">
                                 <InvoiceControls />
+                                <div className="border-t border-border pt-8">
+                                    <div className="mb-5">
+                                        <h4 className="font-bold">
+                                            Bulk Invoice Generation
+                                        </h4>
+
+                                        <p className="mt-1 text-xs text-muted-foreground">
+                                            Generate the current billing period across all active subscriptions.
+                                        </p>
+                                    </div>     
+                                    <BulkInvoiceGenerator />
+                                </div>
                             </div>
 
                         </div>
