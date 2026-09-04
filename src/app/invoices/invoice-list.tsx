@@ -295,7 +295,7 @@ export default function InvoiceList({
           </p>
 
           <p className="mt-1 text-xs text-muted-foreground">
-            Try changing your search or filters.
+            Try adjusting your search or filters.
           </p>
         </div>
       ) : (
@@ -333,13 +333,13 @@ export default function InvoiceList({
                       {subscription?.billing_cycle}
                     </p>
 
-                    <p className="mt-0.5 text-xs text-muted-foreground">
+                    {/* <p className="mt-0.5 text-xs text-muted-foreground">
                       Owner:{' '}
                       {owners.find(
                         (item) =>
                           item.id === subscription?.owner_id
                       )?.full_name || 'Unassigned'}
-                    </p>
+                    </p> */}
                   </div>
 
                   <div className="text-xs md:text-right">
@@ -353,7 +353,7 @@ export default function InvoiceList({
                   </div>
 
                   <div className="self-center text-xs font-semibold text-blue-600 transition group-hover:translate-x-1 dark:text-blue-300">
-                    Open →
+                    View →
                   </div>
                 </Link>
               )

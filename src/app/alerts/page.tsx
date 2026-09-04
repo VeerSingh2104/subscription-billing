@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import AppNavbar from '@/app/components/app-navbar'
 import AlertsList from './alerts-list'
-import { getOverdueAlerts, getAlertHistory, } from './actions'
+import { getOverdueAlerts, getAlertHistory } from './actions'
 
 export default async function AlertsPage() {
   const supabase = await createClient()
@@ -30,10 +30,10 @@ export default async function AlertsPage() {
     redirect('/dashboard')
   }
 
- const [alerts, alertHistory] = await Promise.all([
-  getOverdueAlerts(),
-  getAlertHistory(),
-])
+  const [alerts, alertHistory] = await Promise.all([
+    getOverdueAlerts(),
+    getAlertHistory(),
+  ])
 
   return (
     <>
@@ -46,7 +46,7 @@ export default async function AlertsPage() {
           </p>
 
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground">
-            Overdue invoices
+            Overdue Invoices
           </h1>
 
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
@@ -72,69 +72,72 @@ export default async function AlertsPage() {
             },
           }))}
         />
+
         <section className="mt-10">
-  <div className="mb-5">
-    <p className="text-sm font-semibold text-blue-600">
-      History
-    </p>
+          <div className="mb-5">
+            <p className="text-sm font-semibold text-blue-600">
+              History
+            </p>
 
-    <h2 className="mt-1 text-xl font-semibold text-foreground">
-      Alert history
-    </h2>
+            <h2 className="mt-1 text-xl font-semibold text-foreground">
+              Alert History
+            </h2>
 
-    <p className="mt-1 text-sm text-muted-foreground">
-      Previously dismissed overdue alerts are kept for reference.
-    </p>
-  </div>
-
-  <div className="overflow-hidden rounded-2xl border border-border bg-card">
-    {alertHistory.length === 0 ? (
-      <div className="px-6 py-10 text-center text-sm text-muted-foreground">
-        No dismissed alerts yet.
-      </div>
-    ) : (
-      <div className="divide-y divide-border">
-        {alertHistory.map((alert) => (
-          <div
-            key={alert.id}
-            className="flex flex-col gap-3 px-6 py-5 sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div>
-              <p className="font-medium text-foreground">
-                {alert.invoice.subscription.customer_name}
-              </p>
-
-              <p className="text-sm text-muted-foreground">
-                {alert.invoice.subscription.plan_name}
-              </p>
-
-              <p className="mt-1 text-sm text-muted-foreground">
-                Invoice #{alert.invoice_id.slice(0, 8)}
-              </p>
-            </div>
-
-            <div className="text-sm sm:text-right">
-              <p className="font-medium text-foreground">
-                INR {Number(alert.invoice.amount).toFixed(2)}
-              </p>
-
-              <p className="text-muted-foreground">
-                Due: {alert.due_date}
-              </p>
-
-              <p className="text-muted-foreground">
-                Dismissed:{' '}
-                {alert.dismissed_at
-                  ? new Date(alert.dismissed_at).toLocaleDateString()
-                  : '-'}
-              </p>
-            </div>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Previously dismissed overdue alerts are kept for reference.
+            </p>
           </div>
-        ))}
-      </div>
-    )}
-  </div>
-</section>
+
+          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+            {alertHistory.length === 0 ? (
+              <div className="p-10 text-center text-sm text-muted-foreground">
+                No dismissed alerts yet.
+              </div>
+            ) : (
+              <div className="divide-y divide-border">
+                {alertHistory.map((alert) => (
+                  <div
+                    key={alert.id}
+                    className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <div>
+                      <p className="font-semibold text-foreground">
+                        {alert.invoice.subscription.customer_name}
+                      </p>
+
+                      <p className="text-sm text-muted-foreground">
+                        {alert.invoice.subscription.plan_name}
+                      </p>
+
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        Invoice #{alert.invoice_id.slice(0, 8)}
+                      </p>
+                    </div>
+
+                    <div className="text-sm sm:text-right">
+                      <p className="font-semibold text-foreground">
+                        INR {Number(alert.invoice.amount).toFixed(2)}
+                      </p>
+
+                      <p className="text-muted-foreground">
+                        Due: {alert.due_date}
+                      </p>
+
+                      <p className="text-muted-foreground">
+                        Dismissed:{' '}
+                        {alert.dismissed_at
+                          ? new Date(
+                              alert.dismissed_at
+                            ).toLocaleDateString()
+                          : '-'}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
       </main>
     </>
   )

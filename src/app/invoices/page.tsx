@@ -431,7 +431,7 @@ export default async function InvoicesPage({
               </h1>
 
               <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground">
-                Search, filter and sort invoices across your billing portfolio.
+                Search, filter, and manage invoices across your billing portfolio.
               </p>
             </div>
 
@@ -440,12 +440,12 @@ export default async function InvoicesPage({
                 href="/api/invoices/receivables/csv"
                 className="inline-flex items-center rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-semibold shadow-sm transition hover:bg-muted hover:shadow-md"
               >
-                Export Receivables CSV
+                Export Receivables
               </a>
 
               <div className="rounded-xl border border-border bg-card px-4 py-2.5 shadow-sm">
                 <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                  Total matches
+                  Total Invoices
                 </p>
 
                 <p className="mt-0.5 text-xl font-bold">
@@ -458,12 +458,12 @@ export default async function InvoicesPage({
           {/* Content */}
           {invoiceError ? (
             <div className="mt-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-700 dark:text-red-300">
-              Could not load invoices:{' '}
+              Unable to load invoices:{' '}
               {invoiceError.message}
             </div>
           ) : subscriptionError ? (
             <div className="mt-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-700 dark:text-red-300">
-              Could not load subscriptions:{' '}
+              Unable to load subscriptions:{' '}
               {subscriptionError.message}
             </div>
           ) : (

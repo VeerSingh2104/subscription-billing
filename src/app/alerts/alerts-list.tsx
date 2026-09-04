@@ -29,13 +29,13 @@ export default function AlertsList({
 
   if (alerts.length === 0) {
     return (
-      <div className="rounded-2xl border border-border bg-card p-10 text-center shadow-sm">
+      <div className="rounded-xl border border-border bg-card p-10 text-center shadow-sm">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-xl">
           ✓
         </div>
 
         <h2 className="mt-4 text-lg font-semibold text-foreground">
-          No active overdue alerts
+          No Active Overdue Alerts
         </h2>
 
         <p className="mt-2 text-sm text-muted-foreground">
@@ -58,9 +58,9 @@ export default function AlertsList({
       {alerts.map((alert) => (
         <div
           key={alert.id}
-          className="rounded-2xl border border-red-200 bg-card p-6 shadow-sm dark:border-red-900/50"
+          className="rounded-xl border border-red-200 bg-card p-4 shadow-sm dark:border-red-900/50"
         >
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-700 dark:bg-red-950/50 dark:text-red-300">
@@ -72,7 +72,7 @@ export default function AlertsList({
                 </span>
               </div>
 
-              <h2 className="mt-3 text-lg font-bold text-foreground">
+              <h2 className="mt-2 text-base font-semibold text-foreground">
                 {alert.subscription.customer_name}
               </h2>
 
@@ -80,13 +80,13 @@ export default function AlertsList({
                 {alert.subscription.plan_name}
               </p>
 
-              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Amount
                   </p>
 
-                  <p className="mt-1 font-semibold text-foreground">
+                  <p className="mt-1 text-sm font-semibold text-foreground">
                     INR{' '}
                     {Number(
                       alert.invoice.amount
@@ -99,10 +99,10 @@ export default function AlertsList({
 
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    Due date
+                    Due Date
                   </p>
 
-                  <p className="mt-1 font-semibold text-red-600">
+                  <p className="mt-1 text-sm font-semibold text-red-600">
                     {alert.invoice.due_date}
                   </p>
                 </div>
@@ -112,9 +112,9 @@ export default function AlertsList({
             <div className="flex shrink-0 flex-wrap gap-2">
               <a
                 href={`/invoices/${alert.invoice.id}`}
-                className="rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition hover:bg-muted"
+                className="h-10 rounded-lg border border-border px-4 text-sm font-semibold text-foreground transition hover:bg-muted"
               >
-                Open invoice
+                View Invoice
               </a>
 
               <button
@@ -133,7 +133,7 @@ export default function AlertsList({
                     }
                   })
                 }}
-                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="h-10 rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isPending
                   ? 'Dismissing...'
