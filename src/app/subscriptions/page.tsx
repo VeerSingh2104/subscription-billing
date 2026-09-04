@@ -23,9 +23,9 @@ export default async function SubscriptionsPage() {
     <>
       <AppNavbar />
 
-      <main className="min-h-screen bg-background text-foreground">
+      <main className="min-h-screen bg-background text-foreground animate-fade-in">
         <div className="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-8 lg:py-10">
-          <header className="flex flex-col gap-4 border-b border-border pb-8 sm:flex-row sm:items-end sm:justify-between">
+          <header className="flex flex-col gap-4 border-b border-border pb-8 animate-fade-up sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-xs font-semibold text-blue-600 dark:text-blue-300">
                 Customer contracts
@@ -40,7 +40,7 @@ export default async function SubscriptionsPage() {
               </p>
             </div>
 
-            <div className="rounded-xl border border-border bg-card px-4 py-3 shadow-sm">
+            <div className="rounded-xl border border-border bg-card px-4 py-3 shadow-sm motion-card">
               <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                 Total
               </p>
@@ -52,14 +52,27 @@ export default async function SubscriptionsPage() {
           </header>
 
           {error ? (
-            <div className="mt-8 rounded-xl border border-red-500/20 bg-red-500/10 p-5 text-sm text-red-700 dark:text-red-300">
+            <div
+              className="mt-8 rounded-xl border border-red-500/20 bg-red-500/10 p-5 text-sm text-red-700 dark:text-red-300 animate-fade-up"
+              style={{ animationDelay: '100ms' }}
+            >
               Could not load subscriptions: {error.message}
             </div>
           ) : subscriptions && subscriptions.length > 0 ? (
-            <SubscriptionList subscriptions={subscriptions} />
+            <div
+              className="mt-8 animate-fade-up"
+              style={{ animationDelay: '100ms' }}
+            >
+              <SubscriptionList subscriptions={subscriptions} />
+            </div>
           ) : (
-            <div className="mt-8 rounded-xl border border-dashed border-border bg-card p-12 text-center">
-              <p className="text-sm font-semibold">No subscriptions found</p>
+            <div
+              className="mt-8 rounded-xl border border-dashed border-border bg-card p-12 text-center animate-fade-scale"
+              style={{ animationDelay: '100ms' }}
+            >
+              <p className="text-sm font-semibold">
+                No subscriptions found
+              </p>
 
               <p className="mt-2 text-sm text-muted-foreground">
                 New customer subscriptions will appear here.

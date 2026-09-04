@@ -125,14 +125,14 @@ export default async function DashboardPage({
         <>
             <AppNavbar />
 
-            <main className="min-h-screen bg-background text-foreground">
+            <main className="min-h-screen bg-background text-foreground animate-fade-in">
                 <div className="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-8 lg:py-10">
 
                     {/* ====================================================== */}
                     {/* HEADER */}
                     {/* ====================================================== */}
 
-                    <header className="border-b border-border pb-8">
+                    <header className="border-b border-border pb-8 animate-fade-up">
                         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
 
                             <div className="flex items-start gap-4">
@@ -177,7 +177,7 @@ export default async function DashboardPage({
                             <div className="flex items-center gap-3">
                                 <Link
                                     href="/invoices"
-                                    className="inline-flex items-center justify-center rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-semibold text-foreground shadow-sm transition hover:border-blue-500/30 hover:bg-muted"
+                                    className="motion-button inline-flex items-center justify-center rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-semibold text-foreground shadow-sm transition hover:border-blue-500/30 hover:bg-muted"
                                 >
                                     View invoices
                                     <span className="ml-2">→</span>
@@ -191,13 +191,15 @@ export default async function DashboardPage({
                     {/* FINANCIAL OVERVIEW */}
                     {/* ====================================================== */}
 
-                    <DashboardAnalytics weekOffset={weekOffset} />
+                    <div className="animate-fade-up" style={{ animationDelay: '80ms' }}>
+    <DashboardAnalytics weekOffset={weekOffset} />
+</div>
 
                     {/* ====================================================== */}
                     {/* SUBSCRIPTIONS */}
                     {/* ====================================================== */}
 
-                    <section className="mt-14">
+                    <section className="mt-14 animate-fade-up" style={{ animationDelay: '140ms' }}>
 
                         <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
 
@@ -223,7 +225,7 @@ export default async function DashboardPage({
 
                             <Link
                                 href="/subscriptions"
-                                className="inline-flex items-center justify-center rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-semibold text-foreground shadow-sm transition hover:border-blue-500/30 hover:bg-muted"
+                                className="motion-button inline-flex items-center justify-center rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-semibold text-foreground shadow-sm transition hover:border-blue-500/30 hover:bg-muted"
                             >
                                 Manage all
                                 <span className="ml-2">→</span>
@@ -277,7 +279,8 @@ export default async function DashboardPage({
 
                                 <div
                                     key={subscription.id}
-                                    className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:shadow-xl"
+                                    style={{ animationDelay: `${Math.min(260, 180 + subscriptionsWithCollaborators.indexOf(subscription) * 70)}ms` }}
+                                    className="motion-card group relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:border-blue-500/30 hover:shadow-xl animate-fade-up"
                                 >
 
                                     {/* Top accent */}
@@ -396,7 +399,7 @@ export default async function DashboardPage({
 
                                             <Link
                                                 href={`/subscriptions/${subscription.id}`}
-                                                className="inline-flex w-full items-center justify-center rounded-xl border border-border px-4 py-3 text-xs font-semibold transition hover:border-blue-500/30 hover:bg-muted"
+                                                className="motion-button inline-flex w-full items-center justify-center rounded-xl border border-border px-4 py-3 text-xs font-semibold transition hover:border-blue-500/30 hover:bg-muted"
                                             >
                                                 View Subscription
                                                 <span className="ml-2">→</span>
@@ -462,7 +465,7 @@ export default async function DashboardPage({
 
                     {profile.role === 'BILLING_ADMIN' ? (
 
-                        <section className="mt-14">
+                        <section className="mt-14 animate-fade-up" style={{ animationDelay: '140ms' }}>
 
                             <div className="mb-6">
 
@@ -486,7 +489,7 @@ export default async function DashboardPage({
 
                             {/* Subscription Management */}
 
-                            <details className="group overflow-hidden rounded-2xl border border-border bg-card">
+                            <details className="group overflow-hidden rounded-2xl border border-border bg-card motion-card">
 
                                 <summary className="flex cursor-pointer list-none items-center justify-between px-6 py-5 transition hover:bg-muted/40 [&::-webkit-details-marker]:hidden">
 
@@ -524,7 +527,7 @@ export default async function DashboardPage({
 
                             {/* Invoice Management */}
 
-                            <details className="group mt-4 overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow duration-200 hover:shadow-md">
+                            <details className="group mt-4 overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow duration-200 hover:shadow-md motion-card">
 
                                 <summary className="flex cursor-pointer list-none items-center justify-between border-b border-border bg-muted/10 px-6 py-5 transition hover:bg-muted/20 [&::-webkit-details-marker]:hidden">
 
@@ -584,7 +587,7 @@ export default async function DashboardPage({
 
                     ) : (
 
-                        <section className="mt-14">
+                        <section className="mt-14 animate-fade-up" style={{ animationDelay: '140ms' }}>
 
                             <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
 

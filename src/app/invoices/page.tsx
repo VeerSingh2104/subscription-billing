@@ -416,11 +416,11 @@ export default async function InvoicesPage({
     <>
       <AppNavbar />
 
-      <main className="min-h-screen bg-background text-foreground">
+      <main className="min-h-screen bg-background text-foreground animate-fade-in">
         <div className="mx-auto max-w-7xl px-5 py-6 sm:px-6 lg:px-8 lg:py-8">
 
           {/* Page header */}
-          <header className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-center sm:justify-between">
+          <header className="flex flex-col gap-4 border-b border-border pb-6 animate-fade-up sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-300">
                 Billing activity
@@ -438,12 +438,12 @@ export default async function InvoicesPage({
             <div className="flex items-center gap-3">
               <a
                 href="/api/invoices/receivables/csv"
-                className="inline-flex items-center rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-semibold shadow-sm transition hover:bg-muted hover:shadow-md"
+                className="motion-button inline-flex items-center rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-semibold shadow-sm transition hover:bg-muted hover:shadow-md"
               >
                 Export Receivables
               </a>
 
-              <div className="rounded-xl border border-border bg-card px-4 py-2.5 shadow-sm">
+              <div className="motion-card rounded-xl border border-border bg-card px-4 py-2.5 shadow-sm">
                 <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                   Total Invoices
                 </p>
@@ -457,31 +457,42 @@ export default async function InvoicesPage({
 
           {/* Content */}
           {invoiceError ? (
-            <div className="mt-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-700 dark:text-red-300">
+            <div
+              className="mt-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-700 dark:text-red-300 animate-fade-up"
+              style={{ animationDelay: '100ms' }}
+            >
               Unable to load invoices:{' '}
               {invoiceError.message}
             </div>
           ) : subscriptionError ? (
-            <div className="mt-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-700 dark:text-red-300">
+            <div
+              className="mt-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-700 dark:text-red-300 animate-fade-up"
+              style={{ animationDelay: '100ms' }}
+            >
               Unable to load subscriptions:{' '}
               {subscriptionError.message}
             </div>
           ) : (
-            <InvoiceList
-              invoices={invoicesWithSubscriptions}
-              owners={owners ?? []}
-              query={query}
-              status={status}
-              overdue={overdue}
-              owner={owner}
-              sort={sort}
-              direction={direction}
-              page={page}
-              totalMatches={totalMatches}
-              totalPages={totalPages}
-              currentFrom={currentFrom}
-              currentTo={currentTo}
-            />
+            <div
+              className="animate-fade-up"
+              style={{ animationDelay: '120ms' }}
+            >
+              <InvoiceList
+                invoices={invoicesWithSubscriptions}
+                owners={owners ?? []}
+                query={query}
+                status={status}
+                overdue={overdue}
+                owner={owner}
+                sort={sort}
+                direction={direction}
+                page={page}
+                totalMatches={totalMatches}
+                totalPages={totalPages}
+                currentFrom={currentFrom}
+                currentTo={currentTo}
+              />
+            </div>
           )}
         </div>
       </main>
