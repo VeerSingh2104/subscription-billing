@@ -1,10 +1,14 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export default function AlertNavItem() {
+    const pathname = usePathname()
     const [count, setCount] = useState(0)
+
+    const isActive = pathname === '/alerts'
 
     useEffect(() => {
         let mounted = true
@@ -41,7 +45,11 @@ export default function AlertNavItem() {
     return (
         <Link
             href="/alerts"
-            className="group relative inline-flex items-center px-3.5 py-2 text-xs font-semibold text-muted-foreground transition-colors duration-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
+            className={`group relative inline-flex items-center px-3.5 py-2 text-xs font-semibold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20 ${
+                isActive
+                    ? 'text-foreground'
+                    : 'text-muted-foreground hover:text-foreground'
+            }`}
         >
             <span className="relative inline-flex items-center gap-2">
                 Alerts
@@ -53,7 +61,13 @@ export default function AlertNavItem() {
                 )}
             </span>
 
-            <span className="absolute inset-x-3.5 -bottom-[19px] h-px origin-left scale-x-0 bg-blue-400 transition-transform duration-200 group-hover:scale-x-100" />
+            <span
+                className={`absolute inset-x-3.5 -bottom-[19px] h-px origin-left bg-blue-400 transition-transform duration-200 ease-out ${
+                    isActive
+                        ? 'scale-x-100'
+                        : 'scale-x-0 group-hover:scale-x-100'
+                }`}
+            />
         </Link>
     )
 }
