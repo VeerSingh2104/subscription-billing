@@ -106,27 +106,43 @@ export default function SubscriptionList({
 
   return (
     <div className="mt-8">
-      {/* Filters */}
-      <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-        <div className="border-b border-border bg-muted/10 px-5 py-4 sm:px-6">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-sm font-semibold text-foreground">
-                Subscription workspace
-              </p>
 
-              <p className="mt-1 text-xs text-muted-foreground">
+      {/* ====================================================== */}
+      {/* FILTER WORKSPACE */}
+      {/* ====================================================== */}
+
+      <div className="glass motion-card overflow-hidden rounded-3xl animate-fade-up">
+
+        <div className="border-b border-border/50 bg-background/15 px-5 py-5 sm:px-6">
+
+          <div className="flex items-center justify-between gap-4">
+
+            <div>
+              <div className="flex items-center gap-2">
+
+                <span className="h-1.5 w-1.5 rounded-full bg-blue-500 shadow-sm shadow-blue-500/40" />
+
+                <p className="text-sm font-semibold text-foreground">
+                  Subscription workspace
+                </p>
+
+              </div>
+
+              <p className="mt-1.5 text-xs text-muted-foreground">
                 Search and organize your subscription records.
               </p>
             </div>
 
-            <div className="hidden rounded-lg bg-muted/50 px-3 py-1.5 text-xs font-medium text-muted-foreground sm:block">
+            <div className="hidden rounded-xl border border-border/40 bg-background/30 px-3 py-2 text-xs font-semibold text-muted-foreground backdrop-blur sm:block">
               {filteredSubscriptions.length} visible
             </div>
+
           </div>
+
         </div>
 
         <div className="grid gap-4 p-5 md:grid-cols-[1fr_180px_200px] sm:p-6">
+
           <label className="block">
             <span className="mb-2 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
               Search
@@ -138,7 +154,7 @@ export default function SubscriptionList({
                 setQuery(event.target.value)
               }
               placeholder="Customer, plan, cycle"
-              className="h-11 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+              className="h-11 w-full rounded-xl border border-border/60 bg-background/35 px-4 text-sm text-foreground outline-none backdrop-blur transition-all duration-200 placeholder:text-muted-foreground focus:border-blue-500/60 focus:bg-background/50 focus:ring-4 focus:ring-blue-500/10"
             />
           </label>
 
@@ -152,7 +168,7 @@ export default function SubscriptionList({
               onChange={(event) =>
                 setStatus(event.target.value)
               }
-              className="h-11 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+              className="h-11 w-full rounded-xl border border-border/60 bg-background/35 px-4 text-sm text-foreground outline-none backdrop-blur transition-all duration-200 focus:border-blue-500/60 focus:bg-background/50 focus:ring-4 focus:ring-blue-500/10"
             >
               {statuses.map((item) => (
                 <option
@@ -179,7 +195,7 @@ export default function SubscriptionList({
                   event.target.value as SortMode
                 )
               }
-              className="h-11 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+              className="h-11 w-full rounded-xl border border-border/60 bg-background/35 px-4 text-sm text-foreground outline-none backdrop-blur transition-all duration-200 focus:border-blue-500/60 focus:bg-background/50 focus:ring-4 focus:ring-blue-500/10"
             >
               <option value="recent">
                 Newest start date
@@ -194,11 +210,16 @@ export default function SubscriptionList({
               </option>
             </select>
           </label>
+
         </div>
       </div>
 
-      {/* Result count */}
-      <div className="mt-6 flex items-center justify-between">
+      {/* ====================================================== */}
+      {/* RESULT COUNT */}
+      {/* ====================================================== */}
+
+      <div className="mt-7 flex items-center justify-between animate-fade-up">
+
         <div>
           <p className="text-sm font-semibold text-foreground">
             Subscriptions
@@ -209,16 +230,21 @@ export default function SubscriptionList({
             {subscriptions.length} records
           </p>
         </div>
+
       </div>
 
-      {/* Empty state */}
+      {/* ====================================================== */}
+      {/* EMPTY STATE */}
+      {/* ====================================================== */}
+
       {filteredSubscriptions.length === 0 ? (
-        <div className="mt-4 rounded-2xl border border-dashed border-border bg-card px-6 py-14 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-lg text-muted-foreground">
+        <div className="glass mt-4 rounded-3xl border-dashed px-6 py-14 text-center animate-fade-scale">
+
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-border/50 bg-background/30 text-lg text-muted-foreground backdrop-blur">
             —
           </div>
 
-          <p className="mt-4 text-sm font-semibold text-foreground">
+          <p className="mt-5 text-sm font-semibold text-foreground">
             No matching subscriptions
           </p>
 
@@ -226,11 +252,19 @@ export default function SubscriptionList({
             Adjust the search or filter to bring more
             records into view.
           </p>
+
         </div>
       ) : (
-        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+
+        /* ====================================================== */
+        /* SUBSCRIPTION CARDS */
+        /* ====================================================== */
+
+        <div className="mt-4 grid gap-5 lg:grid-cols-2">
+
           {filteredSubscriptions.map(
-            (subscription) => {
+            (subscription, index) => {
+
               const currentStatus =
                 subscription.status || 'ACTIVE'
 
@@ -238,14 +272,29 @@ export default function SubscriptionList({
                 <Link
                   key={subscription.id}
                   href={`/subscriptions/${subscription.id}`}
-                  className="group relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm outline-none transition duration-200 hover:-translate-y-0.5 hover:border-blue-500/40 hover:shadow-lg focus-visible:ring-4 focus-visible:ring-blue-500/20"
+                  className="glass motion-card group relative overflow-hidden rounded-3xl p-6 outline-none animate-fade-up focus-visible:ring-4 focus-visible:ring-blue-500/20"
+                  style={{
+                    animationDelay: `${Math.min(
+                      500,
+                      120 + index * 70
+                    )}ms`,
+                  }}
                 >
+
                   {/* Accent */}
-                  <div className="absolute inset-x-0 top-0 h-1 bg-blue-500/70 transition group-hover:bg-blue-500" />
+
+                  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500/70 via-indigo-500/70 to-blue-400/40 transition-all duration-300 group-hover:h-1.5 group-hover:from-blue-500 group-hover:via-indigo-500 group-hover:to-blue-400" />
+
+                  {/* Subtle hover glow */}
+
+                  <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-full bg-blue-500/5 blur-3xl transition-opacity duration-300 group-hover:bg-blue-500/10" />
 
                   {/* Header */}
-                  <div className="flex items-start justify-between gap-4">
+
+                  <div className="relative flex items-start justify-between gap-4">
+
                     <div className="min-w-0">
+
                       <p className="truncate text-sm font-semibold tracking-tight text-foreground">
                         {subscription.customer_name}
                       </p>
@@ -253,6 +302,7 @@ export default function SubscriptionList({
                       <p className="mt-1 truncate text-sm text-muted-foreground">
                         {subscription.plan_name}
                       </p>
+
                     </div>
 
                     <div className="shrink-0">
@@ -260,11 +310,15 @@ export default function SubscriptionList({
                         status={subscription.status}
                       />
                     </div>
+
                   </div>
 
                   {/* Primary details */}
-                  <div className="mt-6 grid grid-cols-2 gap-3">
-                    <div className="rounded-xl border border-border bg-muted/20 p-4 transition group-hover:bg-muted/30">
+
+                  <div className="relative mt-6 grid grid-cols-2 gap-3">
+
+                    <div className="glass-button rounded-2xl bg-background/20 p-4">
+
                       <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                         Price
                       </p>
@@ -278,9 +332,11 @@ export default function SubscriptionList({
                       <p className="mt-0.5 text-xs text-muted-foreground">
                         {subscription.billing_cycle}
                       </p>
+
                     </div>
 
-                    <div className="rounded-xl border border-border bg-muted/20 p-4 transition group-hover:bg-muted/30">
+                    <div className="glass-button rounded-2xl bg-background/20 p-4">
+
                       <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                         Started
                       </p>
@@ -294,31 +350,42 @@ export default function SubscriptionList({
                       <p className="mt-0.5 text-xs text-muted-foreground">
                         Subscription start
                       </p>
+
                     </div>
+
                   </div>
 
                   {/* Footer */}
-                  <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
+
+                  <div className="relative mt-6 flex items-center justify-between border-t border-border/50 pt-4">
+
                     <span className="text-xs text-muted-foreground">
                       {currentStatus === 'ACTIVE'
                         ? 'Currently active'
                         : 'Subscription record'}
                     </span>
 
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 transition group-hover:translate-x-1 dark:text-blue-300">
-                      Open
+                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 transition-all duration-200 group-hover:translate-x-1 dark:text-blue-300">
+                      View
 
-                      <span aria-hidden="true">
+                      <span
+                        aria-hidden="true"
+                        className="transition-transform duration-200 group-hover:translate-x-0.5"
+                      >
                         →
                       </span>
                     </span>
+
                   </div>
+
                 </Link>
               )
             }
           )}
+
         </div>
       )}
+
     </div>
   )
 }

@@ -49,12 +49,12 @@ export default function InvoiceDueDateEditor({
   }
 
   return (
-    <div className="mt-3">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
-        <div>
+    <div className="mt-4 rounded-2xl border border-border bg-background/20 p-3.5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+        <div className="flex-1 sm:max-w-xs">
           <label
             htmlFor={`due-date-${invoiceId}`}
-            className="block text-xs font-medium text-gray-500"
+            className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
           >
             Change due date
           </label>
@@ -69,7 +69,7 @@ export default function InvoiceDueDateEditor({
               setError('')
             }}
             disabled={isPending}
-            className="mt-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 disabled:opacity-50"
+            className="h-11 w-full rounded-xl border border-border bg-background/50 px-3.5 text-sm font-medium text-foreground shadow-sm outline-none transition focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
 
@@ -81,24 +81,28 @@ export default function InvoiceDueDateEditor({
             !dueDate ||
             dueDate === currentDueDate
           }
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="glass-primary motion-button inline-flex h-11 items-center justify-center rounded-xl px-5 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
         >
           {isPending
             ? 'Saving...'
-            : 'Save due date'}
+            : 'Save'}
         </button>
       </div>
 
       {error && (
-        <p className="mt-2 text-sm text-red-600">
-          {error}
-        </p>
+        <div className="mt-3 rounded-xl border border-red-500/20 bg-red-500/10 px-3.5 py-2.5">
+          <p className="text-xs font-medium text-red-700 dark:text-red-300">
+            {error}
+          </p>
+        </div>
       )}
 
       {success && (
-        <p className="mt-2 text-sm text-emerald-600">
-          Due date updated successfully.
-        </p>
+        <div className="mt-3 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-3.5 py-2.5">
+          <p className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
+            Due date updated successfully.
+          </p>
+        </div>
       )}
     </div>
   )

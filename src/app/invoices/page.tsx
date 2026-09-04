@@ -419,58 +419,113 @@ export default async function InvoicesPage({
       <main className="min-h-screen bg-background text-foreground animate-fade-in">
         <div className="mx-auto max-w-7xl px-5 py-6 sm:px-6 lg:px-8 lg:py-8">
 
-          {/* Page header */}
-          <header className="flex flex-col gap-4 border-b border-border pb-6 animate-fade-up sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-300">
-                Billing activity
-              </p>
+          {/* ====================================================== */}
+          {/* PAGE HEADER */}
+          {/* ====================================================== */}
 
-              <h1 className="mt-1.5 text-2xl font-bold tracking-tight">
-                Invoices
-              </h1>
+          <header
+            className="glass motion-card rounded-3xl p-6 animate-fade-up sm:p-7"
+            style={{ animationDelay: '70ms' }}
+          >
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
 
-              <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground">
-                Search, filter, and manage invoices across your billing portfolio.
-              </p>
-            </div>
+              <div className="min-w-0">
 
-            <div className="flex items-center gap-3">
-              <a
-                href="/api/invoices/receivables/csv"
-                className="motion-button inline-flex items-center rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-semibold shadow-sm transition hover:bg-muted hover:shadow-md"
-              >
-                Export Receivables
-              </a>
+                <div className="flex items-center gap-2">
 
-              <div className="motion-card rounded-xl border border-border bg-card px-4 py-2.5 shadow-sm">
-                <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                  Total Invoices
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500 shadow-sm shadow-blue-500/40" />
+
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-300">
+                    Billing activity
+                  </p>
+
+                </div>
+
+                <h1 className="mt-2 text-2xl font-bold tracking-tight">
+                  Invoices
+                </h1>
+
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
+                  Search, filter, and manage invoices across your billing portfolio.
                 </p>
 
-                <p className="mt-0.5 text-xl font-bold">
-                  {totalMatches}
-                </p>
               </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+
+                <a
+                  href="/api/invoices/receivables/csv"
+                  className="glass-button motion-button inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-xs font-semibold text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
+                >
+                  Export Receivables
+                </a>
+
+                <div className="glass-button motion-card rounded-2xl bg-background/25 px-5 py-3">
+
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    Total Invoices
+                  </p>
+
+                  <p className="mt-0.5 text-xl font-bold tracking-tight">
+                    {totalMatches}
+                  </p>
+
+                </div>
+
+              </div>
+
             </div>
           </header>
 
-          {/* Content */}
+          {/* ====================================================== */}
+          {/* CONTENT */}
+          {/* ====================================================== */}
+
           {invoiceError ? (
             <div
-              className="mt-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-700 dark:text-red-300 animate-fade-up"
+              className="glass mt-6 rounded-2xl border-red-500/20 bg-red-500/5 p-5 animate-fade-up"
               style={{ animationDelay: '100ms' }}
             >
-              Unable to load invoices:{' '}
-              {invoiceError.message}
+              <div className="flex items-start gap-3">
+
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-red-500/10 text-sm font-bold text-red-600 dark:text-red-400">
+                  !
+                </div>
+
+                <div>
+                  <p className="text-sm font-semibold text-red-600 dark:text-red-400">
+                    Unable to load invoices
+                  </p>
+
+                  <p className="mt-1 text-xs text-red-500/80 dark:text-red-300/80">
+                    {invoiceError.message}
+                  </p>
+                </div>
+
+              </div>
             </div>
           ) : subscriptionError ? (
             <div
-              className="mt-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-700 dark:text-red-300 animate-fade-up"
+              className="glass mt-6 rounded-2xl border-red-500/20 bg-red-500/5 p-5 animate-fade-up"
               style={{ animationDelay: '100ms' }}
             >
-              Unable to load subscriptions:{' '}
-              {subscriptionError.message}
+              <div className="flex items-start gap-3">
+
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-red-500/10 text-sm font-bold text-red-600 dark:text-red-400">
+                  !
+                </div>
+
+                <div>
+                  <p className="text-sm font-semibold text-red-600 dark:text-red-400">
+                    Unable to load subscriptions
+                  </p>
+
+                  <p className="mt-1 text-xs text-red-500/80 dark:text-red-300/80">
+                    {subscriptionError.message}
+                  </p>
+                </div>
+
+              </div>
             </div>
           ) : (
             <div
@@ -494,6 +549,7 @@ export default async function InvoicesPage({
               />
             </div>
           )}
+
         </div>
       </main>
     </>

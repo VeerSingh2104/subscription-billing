@@ -114,12 +114,47 @@ export default function InvoiceList({
   return (
     <div className="mt-6">
 
-      {/* Filters */}
-      <div className="rounded-xl border border-border bg-card p-3.5 shadow-sm">
-        <div className="grid gap-2.5 md:grid-cols-2 lg:grid-cols-4">
+      {/* ====================================================== */}
+      {/* FILTER WORKSPACE */}
+      {/* ====================================================== */}
+
+      <div
+        className="glass motion-card rounded-3xl p-4 animate-fade-up"
+        style={{ animationDelay: '140ms' }}
+      >
+        <div className="mb-4 flex items-center justify-between gap-3">
+
+          <div>
+            <p className="text-xs font-semibold">
+              Invoice filters
+            </p>
+
+            <p className="mt-0.5 text-[11px] text-muted-foreground">
+              Refine billing activity using the available filters.
+            </p>
+          </div>
+
+          {(query ||
+            status !== 'ALL' ||
+            overdue ||
+            owner !== 'ALL') && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="glass-button motion-button shrink-0 rounded-xl px-3.5 py-2 text-xs font-semibold text-muted-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
+            >
+              Clear filters
+            </button>
+          )}
+
+        </div>
+
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+
+          {/* Search */}
 
           <label className="block lg:col-span-2">
-            <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+            <span className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
               Search
             </span>
 
@@ -133,12 +168,14 @@ export default function InvoiceList({
                 })
               }}
               placeholder="Customer name or billing email"
-              className="h-10 w-full rounded-lg border border-border bg-background px-3 text-xs outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+              className="h-10 w-full rounded-xl border border-border/70 bg-background/45 px-3 text-xs outline-none backdrop-blur-md transition focus:border-blue-500/60 focus:bg-background/65 focus:ring-4 focus:ring-blue-500/10"
             />
           </label>
 
+          {/* Status */}
+
           <label className="block">
-            <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+            <span className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
               Status
             </span>
 
@@ -149,7 +186,7 @@ export default function InvoiceList({
                   status: event.target.value,
                 })
               }
-              className="h-10 w-full rounded-lg border border-border bg-background px-3 text-xs outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+              className="h-10 w-full rounded-xl border border-border/70 bg-background/45 px-3 text-xs outline-none backdrop-blur-md transition focus:border-blue-500/60 focus:bg-background/65 focus:ring-4 focus:ring-blue-500/10"
             >
               <option value="ALL">All statuses</option>
               <option value="DRAFT">Draft</option>
@@ -159,8 +196,10 @@ export default function InvoiceList({
             </select>
           </label>
 
+          {/* Account Manager */}
+
           <label className="block">
-            <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+            <span className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
               Account Manager
             </span>
 
@@ -171,7 +210,7 @@ export default function InvoiceList({
                   owner: event.target.value,
                 })
               }
-              className="h-10 w-full rounded-lg border border-border bg-background px-3 text-xs outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+              className="h-10 w-full rounded-xl border border-border/70 bg-background/45 px-3 text-xs outline-none backdrop-blur-md transition focus:border-blue-500/60 focus:bg-background/65 focus:ring-4 focus:ring-blue-500/10"
             >
               <option value="ALL">
                 All account managers
@@ -187,11 +226,15 @@ export default function InvoiceList({
         </div>
 
         {/* Secondary filters */}
-        <div className="mt-2.5 flex flex-col gap-2.5 sm:flex-row sm:items-end sm:justify-between">
-          <div className="flex flex-col gap-2.5 sm:flex-row">
+
+        <div className="mt-3 flex flex-col gap-3 border-t border-border/50 pt-3 sm:flex-row sm:items-end sm:justify-between">
+
+          <div className="flex flex-col gap-3 sm:flex-row">
+
+            {/* Sort */}
 
             <label className="block">
-              <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+              <span className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                 Sort by
               </span>
 
@@ -202,7 +245,7 @@ export default function InvoiceList({
                     sort: event.target.value,
                   })
                 }
-                className="h-10 min-w-40 rounded-lg border border-border bg-background px-3 text-xs outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                className="h-10 min-w-40 rounded-xl border border-border/70 bg-background/45 px-3 text-xs outline-none backdrop-blur-md transition focus:border-blue-500/60 focus:bg-background/65 focus:ring-4 focus:ring-blue-500/10"
               >
                 <option value="due_date">
                   Due date
@@ -216,8 +259,10 @@ export default function InvoiceList({
               </select>
             </label>
 
+            {/* Direction */}
+
             <label className="block">
-              <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+              <span className="mb-1.5 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                 Direction
               </span>
 
@@ -228,7 +273,7 @@ export default function InvoiceList({
                     direction: event.target.value,
                   })
                 }
-                className="h-10 min-w-40 rounded-lg border border-border bg-background px-3 text-xs outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                className="h-10 min-w-40 rounded-xl border border-border/70 bg-background/45 px-3 text-xs outline-none backdrop-blur-md transition focus:border-blue-500/60 focus:bg-background/65 focus:ring-4 focus:ring-blue-500/10"
               >
                 <option value="asc">
                   Ascending
@@ -239,7 +284,9 @@ export default function InvoiceList({
               </select>
             </label>
 
-            <label className="flex h-10 items-center gap-2 rounded-lg border border-border bg-background px-3">
+            {/* Overdue */}
+
+            <label className="flex h-10 items-center gap-2 rounded-xl border border-border/70 bg-background/45 px-3 backdrop-blur-md transition hover:bg-background/65">
               <input
                 type="checkbox"
                 checked={overdue}
@@ -257,25 +304,25 @@ export default function InvoiceList({
                 Overdue only
               </span>
             </label>
+
           </div>
 
-          {(query ||
-            status !== 'ALL' ||
-            overdue ||
-            owner !== 'ALL') && (
-            <button
-              type="button"
-              onClick={clearFilters}
-              className="h-10 rounded-lg border border-border px-3.5 text-xs font-semibold transition hover:bg-muted"
-            >
-              Clear filters
-            </button>
-          )}
+          <div className="text-[11px] text-muted-foreground">
+            {totalMatches > 0
+              ? `${totalMatches} invoice${totalMatches === 1 ? '' : 's'} found`
+              : 'No results'}
+          </div>
+
         </div>
       </div>
 
-      {/* Result count */}
-      <div className="mt-3 flex flex-col gap-1.5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+      {/* ====================================================== */}
+      {/* RESULT COUNT */}
+      {/* ====================================================== */}
+
+      <div
+        className="mt-4 flex flex-col gap-1.5 px-1 text-xs text-muted-foreground animate-fade-in sm:flex-row sm:items-center sm:justify-between"
+      >
         <p>
           {totalMatches === 0
             ? 'No matching invoices'
@@ -287,86 +334,144 @@ export default function InvoiceList({
         </p>
       </div>
 
-      {/* Empty state */}
+      {/* ====================================================== */}
+      {/* EMPTY STATE */}
+      {/* ====================================================== */}
+
       {invoices.length === 0 ? (
-        <div className="mt-3 rounded-xl border border-dashed border-border bg-card px-6 py-8 text-center">
-          <p className="text-sm font-semibold">
+        <div
+          className="glass mt-3 rounded-3xl px-6 py-12 text-center animate-fade-scale"
+        >
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-300">
+            <span className="text-lg font-semibold">
+              —
+            </span>
+          </div>
+
+          <p className="mt-4 text-sm font-semibold">
             No matching invoices
           </p>
 
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mx-auto mt-1 max-w-sm text-xs leading-5 text-muted-foreground">
             Try adjusting your search or filters.
           </p>
         </div>
       ) : (
         <>
-          {/* Invoice list */}
-          <div className="mt-3 divide-y divide-border overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-            {invoices.map((invoice) => {
-              const subscription = invoice.subscriptions?.[0]
+          {/* ================================================== */}
+          {/* INVOICE LIST */}
+          {/* ================================================== */}
+
+          <div className="mt-3 space-y-3">
+
+            {invoices.map((invoice, index) => {
+              const subscription =
+                invoice.subscriptions?.[0]
 
               return (
                 <Link
                   key={invoice.id}
                   href={`/invoices/${invoice.id}`}
-                  className="group grid gap-3 px-4 py-3.5 outline-none transition hover:bg-muted/40 focus-visible:ring-4 focus-visible:ring-blue-500/20 md:grid-cols-[1fr_auto_auto]"
+                  className="glass motion-card group relative block overflow-hidden rounded-2xl p-4 outline-none animate-fade-up focus-visible:ring-4 focus-visible:ring-blue-500/20"
+                  style={{
+                    animationDelay: `${180 + index * 45}ms`,
+                  }}
                 >
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2.5">
-                      <p className="truncate text-sm font-semibold">
-                        {subscription?.customer_name ||
-                          'Unknown customer'}
+                  {/* Accent */}
+
+                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-500/60 to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-100" />
+
+                  <div className="grid gap-4 md:grid-cols-[1fr_auto_auto] md:items-center">
+
+                    {/* Invoice identity */}
+
+                    <div className="min-w-0">
+
+                      <div className="flex flex-wrap items-center gap-2.5">
+
+                        <p className="truncate text-sm font-semibold">
+                          {subscription?.customer_name ||
+                            'Unknown customer'}
+                        </p>
+
+                        <StatusBadge
+                          status={invoice.status}
+                        />
+
+                      </div>
+
+                      <p className="mt-1 truncate text-xs text-muted-foreground">
+                        {subscription?.billing_email ||
+                          'No billing email'}
                       </p>
 
-                      <StatusBadge
-                        status={invoice.status}
-                      />
+                      <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+
+                        <span className="rounded-lg bg-background/45 px-2 py-1 backdrop-blur-sm">
+                          {subscription?.plan_name ||
+                            'No plan'}
+                        </span>
+
+                        <span className="text-border">
+                          ·
+                        </span>
+
+                        <span>
+                          {subscription?.billing_cycle ||
+                            'No billing cycle'}
+                        </span>
+
+                      </div>
+
                     </div>
 
-                    <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                      {subscription?.billing_email ||
-                        'No billing email'}
-                    </p>
+                    {/* Amount / due date */}
 
-                    <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                      {subscription?.plan_name} ·{' '}
-                      {subscription?.billing_cycle}
-                    </p>
+                    <div className="rounded-xl border border-border/50 bg-background/30 px-4 py-2.5 text-left backdrop-blur-sm md:min-w-36 md:text-right">
 
-                    {/* <p className="mt-0.5 text-xs text-muted-foreground">
-                      Owner:{' '}
-                      {owners.find(
-                        (item) =>
-                          item.id === subscription?.owner_id
-                      )?.full_name || 'Unassigned'}
-                    </p> */}
-                  </div>
+                      <p className="text-sm font-bold tracking-tight">
+                        {formatCurrency(invoice.amount)}
+                      </p>
 
-                  <div className="text-xs md:text-right">
-                    <p className="font-semibold">
-                      {formatCurrency(invoice.amount)}
-                    </p>
+                      <p className="mt-0.5 text-[11px] text-muted-foreground">
+                        Due {formatDate(invoice.due_date)}
+                      </p>
 
-                    <p className="mt-0.5 text-muted-foreground">
-                      Due {formatDate(invoice.due_date)}
-                    </p>
-                  </div>
+                    </div>
 
-                  <div className="self-center text-xs font-semibold text-blue-600 transition group-hover:translate-x-1 dark:text-blue-300">
-                    View →
+                    {/* View */}
+
+                    <div className="flex items-center justify-end md:pl-1">
+
+                      <span className="glass-button motion-button inline-flex items-center rounded-xl px-3 py-2 text-xs font-semibold text-blue-600 dark:text-blue-300">
+                        View
+                        <span className="ml-1.5 transition-transform duration-200 group-hover:translate-x-1">
+                          →
+                        </span>
+                      </span>
+
+                    </div>
+
                   </div>
                 </Link>
               )
             })}
+
           </div>
 
-          {/* Pagination */}
-          <div className="mt-3 flex items-center justify-between rounded-xl border border-border bg-card px-3 py-2.5">
+          {/* ================================================== */}
+          {/* PAGINATION */}
+          {/* ================================================== */}
+
+          <div
+            className="glass mt-4 flex items-center justify-between rounded-2xl px-3 py-2.5 animate-fade-up"
+            style={{ animationDelay: '260ms' }}
+          >
             <button
               type="button"
               disabled={page <= 1}
               onClick={() => goToPage(page - 1)}
-              className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold transition hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+              className="glass-button motion-button rounded-xl px-3.5 py-2 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-40"
             >
               Previous
             </button>
@@ -386,7 +491,7 @@ export default function InvoiceList({
               type="button"
               disabled={page >= totalPages}
               onClick={() => goToPage(page + 1)}
-              className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold transition hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+              className="glass-button motion-button rounded-xl px-3.5 py-2 text-xs font-semibold disabled:cursor-not-allowed disabled:opacity-40"
             >
               Next
             </button>

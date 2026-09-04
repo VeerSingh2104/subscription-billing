@@ -29,8 +29,8 @@ export default function AlertsList({
 
   if (alerts.length === 0) {
     return (
-      <div className="rounded-xl border border-border bg-card p-10 text-center shadow-sm">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-xl">
+      <div className="motion-card rounded-xl border border-border bg-card p-10 text-center shadow-sm animate-fade-scale">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-xl transition-transform duration-200 hover:scale-105">
           ✓
         </div>
 
@@ -48,22 +48,31 @@ export default function AlertsList({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div
+        className="flex items-center justify-between animate-fade-up"
+        style={{ animationDelay: '80ms' }}
+      >
         <p className="text-sm text-muted-foreground">
           {alerts.length} active overdue alert
           {alerts.length === 1 ? '' : 's'}
         </p>
       </div>
 
-      {alerts.map((alert) => (
+      {alerts.map((alert, index) => (
         <div
           key={alert.id}
-          className="rounded-xl border border-red-200 bg-card p-4 shadow-sm dark:border-red-900/50"
+          className="motion-card group rounded-xl border border-red-200 bg-card p-4 shadow-sm animate-fade-up dark:border-red-900/50"
+          style={{
+            animationDelay: `${Math.min(
+              500,
+              120 + index * 70
+            )}ms`,
+          }}
         >
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-700 dark:bg-red-950/50 dark:text-red-300">
+                <span className="rounded-full bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-700 transition-transform duration-200 group-hover:scale-105 dark:bg-red-950/50 dark:text-red-300">
                   OVERDUE
                 </span>
 
@@ -72,7 +81,7 @@ export default function AlertsList({
                 </span>
               </div>
 
-              <h2 className="mt-2 text-base font-semibold text-foreground">
+              <h2 className="mt-2 text-base font-semibold text-foreground transition-colors duration-200 group-hover:text-blue-600 dark:group-hover:text-blue-300">
                 {alert.subscription.customer_name}
               </h2>
 
@@ -81,7 +90,7 @@ export default function AlertsList({
               </p>
 
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                <div>
+                <div className="transition-transform duration-200 group-hover:translate-x-0.5">
                   <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Amount
                   </p>
@@ -102,7 +111,7 @@ export default function AlertsList({
                     Due Date
                   </p>
 
-                  <p className="mt-1 text-sm font-semibold text-red-600">
+                  <p className="mt-1 text-sm font-semibold text-red-600 transition-colors duration-200 dark:text-red-400">
                     {alert.invoice.due_date}
                   </p>
                 </div>
@@ -112,7 +121,7 @@ export default function AlertsList({
             <div className="flex shrink-0 flex-wrap gap-2">
               <a
                 href={`/invoices/${alert.invoice.id}`}
-                className="h-10 rounded-lg border border-border px-4 text-sm font-semibold text-foreground transition hover:bg-muted"
+                className="motion-button inline-flex h-10 items-center justify-center rounded-lg border border-border px-4 text-sm font-semibold text-foreground transition hover:border-blue-500/30 hover:bg-muted"
               >
                 View Invoice
               </a>
@@ -133,7 +142,7 @@ export default function AlertsList({
                     }
                   })
                 }}
-                className="h-10 rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="motion-button h-10 rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isPending
                   ? 'Dismissing...'

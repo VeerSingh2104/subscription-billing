@@ -124,33 +124,34 @@ export default function InvoiceStatusControl({
       className="mt-4 flex flex-col gap-2 sm:flex-row"
     >
       <select
-        name="status"
-        defaultValue=""
-        required
-        className="rounded-md border bg-transparent p-2"
-      >
-        <option value="" disabled>
-          Change status
-        </option>
+  name="status"
+  defaultValue=""
+  required
+  className="rounded-xl border border-border bg-background/40 p-2.5 text-sm text-foreground outline-none transition focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 [color-scheme:light] dark:[color-scheme:dark]"
+>
+  <option value="" disabled>
+    Change status
+  </option>
 
-        {availableStatuses.map((status) => (
-          <option
-            key={status}
-            value={status}
-          >
-            {status === 'ISSUED' && 'Issue Invoice'}
-            {status === 'PAID' && 'Mark as Paid'}
-            {status === 'VOID' && 'Void Invoice'}
-          </option>
-        ))}
-      </select>
+  {availableStatuses.map((status) => (
+    <option
+      key={status}
+      value={status}
+      className="bg-background text-foreground"
+    >
+      {status === 'ISSUED' && 'Issue Invoice'}
+      {status === 'PAID' && 'Mark as Paid'}
+      {status === 'VOID' && 'Void Invoice'}
+    </option>
+  ))}
+</select>
 
       <button
-        type="submit"
-        className="rounded-md border px-4 py-2 font-medium transition hover:bg-gray-100 dark:hover:bg-gray-800"
-      >
-        Update Status
-      </button>
+  type="submit"
+  className="glass-button motion-button inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
+>
+  Update Status
+</button>
     </form>
   )
 }

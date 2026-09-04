@@ -47,7 +47,7 @@ export default async function DashboardPage({
         return (
             <main className="min-h-screen bg-background px-6 py-10 text-foreground">
                 <div className="mx-auto max-w-7xl">
-                    <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-8">
+                    <div className="glass rounded-2xl border-red-500/20 bg-red-500/5 p-8">
                         <h1 className="text-2xl font-bold">
                             Profile Not Found
                         </h1>
@@ -132,18 +132,20 @@ export default async function DashboardPage({
                     {/* HEADER */}
                     {/* ====================================================== */}
 
-                    <header className="border-b border-border pb-8 animate-fade-up">
+                    <header
+                        className="glass rounded-3xl p-6 animate-fade-up sm:p-7"
+                    >
                         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
 
                             <div className="flex items-start gap-4">
 
-                                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-2xl font-bold text-white shadow-lg shadow-blue-600/20">
+                                <div className="glass-primary motion-button flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-2xl font-bold text-white">
                                     B
                                 </div>
 
                                 <div className="min-w-0">
 
-                                    <p className="text-xs font-semibold text-blue-500">
+                                    <p className="text-xs font-semibold text-blue-500 dark:text-blue-300">
                                         Billing Platform
                                     </p>
 
@@ -160,7 +162,7 @@ export default async function DashboardPage({
 
                                     <div className="mt-3 flex flex-wrap items-center gap-3">
 
-                                        <span className="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-500">
+                                        <span className="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-600 dark:text-blue-300">
                                             {profile.role}
                                         </span>
 
@@ -177,10 +179,12 @@ export default async function DashboardPage({
                             <div className="flex items-center gap-3">
                                 <Link
                                     href="/invoices"
-                                    className="motion-button inline-flex items-center justify-center rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-semibold text-foreground shadow-sm transition hover:border-blue-500/30 hover:bg-muted"
+                                    className="glass-button motion-button inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-xs font-semibold text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
                                 >
                                     View invoices
-                                    <span className="ml-2">→</span>
+                                    <span className="ml-2 transition-transform duration-200 group-hover:translate-x-0.5">
+                                        →
+                                    </span>
                                 </Link>
                             </div>
 
@@ -191,15 +195,21 @@ export default async function DashboardPage({
                     {/* FINANCIAL OVERVIEW */}
                     {/* ====================================================== */}
 
-                    <div className="animate-fade-up" style={{ animationDelay: '80ms' }}>
-    <DashboardAnalytics weekOffset={weekOffset} />
-</div>
+                    <div
+                        className="animate-fade-up"
+                        style={{ animationDelay: '80ms' }}
+                    >
+                        <DashboardAnalytics weekOffset={weekOffset} />
+                    </div>
 
                     {/* ====================================================== */}
                     {/* SUBSCRIPTIONS */}
                     {/* ====================================================== */}
 
-                    <section className="mt-14 animate-fade-up" style={{ animationDelay: '140ms' }}>
+                    <section
+                        className="mt-14 animate-fade-up"
+                        style={{ animationDelay: '140ms' }}
+                    >
 
                         <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
 
@@ -211,7 +221,7 @@ export default async function DashboardPage({
                                         Subscriptions
                                     </h2>
 
-                                    <span className="rounded-full border border-blue-500/15 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-500">
+                                    <span className="rounded-full border border-blue-500/15 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-600 dark:text-blue-300">
                                         {subscriptionCount} total
                                     </span>
 
@@ -225,7 +235,7 @@ export default async function DashboardPage({
 
                             <Link
                                 href="/subscriptions"
-                                className="motion-button inline-flex items-center justify-center rounded-xl border border-border bg-card px-4 py-2.5 text-xs font-semibold text-foreground shadow-sm transition hover:border-blue-500/30 hover:bg-muted"
+                                className="glass-button motion-button inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-xs font-semibold text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
                             >
                                 Manage all
                                 <span className="ml-2">→</span>
@@ -236,8 +246,7 @@ export default async function DashboardPage({
                         {/* Error */}
 
                         {subscriptionsError && (
-                            <div className="mb-6 rounded-2xl border border-red-500/20 bg-red-500/5 p-5">
-
+                            <div className="glass mb-6 rounded-2xl border-red-500/20 bg-red-500/5 p-5 animate-fade-up">
                                 <p className="text-sm font-semibold text-red-500">
                                     Unable to load subscriptions
                                 </p>
@@ -245,7 +254,6 @@ export default async function DashboardPage({
                                 <p className="mt-1 text-sm text-red-500/80">
                                     {subscriptionsError.message}
                                 </p>
-
                             </div>
                         )}
 
@@ -253,9 +261,9 @@ export default async function DashboardPage({
 
                         {!subscriptionsError &&
                             subscriptionsWithCollaborators.length === 0 && (
-                                <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center">
+                                <div className="glass rounded-2xl border-dashed p-12 text-center animate-fade-scale">
 
-                                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-xl">
+                                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-border/60 bg-background/40 text-xl backdrop-blur">
                                         $
                                     </div>
 
@@ -279,8 +287,17 @@ export default async function DashboardPage({
 
                                 <div
                                     key={subscription.id}
-                                    style={{ animationDelay: `${Math.min(260, 180 + subscriptionsWithCollaborators.indexOf(subscription) * 70)}ms` }}
-                                    className="motion-card group relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:border-blue-500/30 hover:shadow-xl animate-fade-up"
+                                    style={{
+                                        animationDelay: `${Math.min(
+                                            260,
+                                            180 +
+                                            subscriptionsWithCollaborators.indexOf(
+                                                subscription
+                                            ) *
+                                            70
+                                        )}ms`,
+                                    }}
+                                    className="glass motion-card group relative overflow-hidden rounded-2xl animate-fade-up hover:border-blue-500/30 hover:shadow-xl hover:shadow-blue-500/5"
                                 >
 
                                     {/* Top accent */}
@@ -311,7 +328,7 @@ export default async function DashboardPage({
 
                                                 </div>
 
-                                                <h3 className="truncate text-sm font-semibold">
+                                                <h3 className="truncate text-sm font-semibold transition-colors duration-200 group-hover:text-blue-600 dark:group-hover:text-blue-300">
                                                     {subscription.customer_name}
                                                 </h3>
 
@@ -321,7 +338,7 @@ export default async function DashboardPage({
 
                                             </div>
 
-                                            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-500">
+                                            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-300">
 
                                                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
 
@@ -333,7 +350,7 @@ export default async function DashboardPage({
 
                                         {/* Price */}
 
-                                        <div className="mt-6 rounded-2xl border border-border bg-muted/30 p-4 sm:p-5">
+                                        <div className="glass mt-6 rounded-2xl border-border/50 bg-background/30 p-4 sm:p-5">
 
                                             <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                                                 Subscription Price
@@ -357,7 +374,7 @@ export default async function DashboardPage({
 
                                         <div className="mt-4 grid grid-cols-2 gap-3">
 
-                                            <div className="rounded-xl border border-border bg-background/50 p-3.5">
+                                            <div className="glass-button rounded-xl bg-background/30 p-3.5">
 
                                                 <div className="flex items-center gap-2">
 
@@ -375,7 +392,7 @@ export default async function DashboardPage({
 
                                             </div>
 
-                                            <div className="rounded-xl border border-border bg-background/50 p-3.5">
+                                            <div className="glass-button rounded-xl bg-background/30 p-3.5">
 
                                                 <div className="flex items-center gap-2">
 
@@ -399,10 +416,12 @@ export default async function DashboardPage({
 
                                             <Link
                                                 href={`/subscriptions/${subscription.id}`}
-                                                className="motion-button inline-flex w-full items-center justify-center rounded-xl border border-border px-4 py-3 text-xs font-semibold transition hover:border-blue-500/30 hover:bg-muted"
+                                                className="glass-button motion-button inline-flex w-full items-center justify-center rounded-xl px-4 py-3 text-xs font-semibold text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
                                             >
                                                 View Subscription
-                                                <span className="ml-2">→</span>
+                                                <span className="ml-2">
+                                                    →
+                                                </span>
                                             </Link>
 
                                         </div>
@@ -413,7 +432,7 @@ export default async function DashboardPage({
 
                                     {profile.role === 'BILLING_ADMIN' && (
 
-                                        <div className="border-t border-border bg-muted/10 px-6 py-6">
+                                        <div className="border-t border-border/50 bg-background/10 px-6 py-6 backdrop-blur-sm">
 
                                             <div className="mb-5 flex items-start justify-between gap-4">
 
@@ -425,7 +444,7 @@ export default async function DashboardPage({
                                                             Account Manager
                                                         </h4>
 
-                                                        <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] font-semibold text-blue-500">
+                                                        <span className="rounded-full border border-blue-500/15 bg-blue-500/10 px-2 py-0.5 text-[10px] font-semibold text-blue-500">
                                                             ADMIN
                                                         </span>
 
@@ -442,9 +461,13 @@ export default async function DashboardPage({
 
                                             <CollaboratorControl
                                                 subscriptionId={subscription.id}
-                                                collaborators={subscription.collaborators ?? []}
+                                                collaborators={
+                                                    subscription.collaborators ?? []
+                                                }
                                                 availableManagers={managerProfiles}
-                                                managersLoadError={managerProfilesError}
+                                                managersLoadError={
+                                                    managerProfilesError
+                                                }
                                             />
 
                                         </div>
@@ -465,7 +488,10 @@ export default async function DashboardPage({
 
                     {profile.role === 'BILLING_ADMIN' ? (
 
-                        <section className="mt-14 animate-fade-up" style={{ animationDelay: '140ms' }}>
+                        <section
+                            className="mt-14 animate-fade-up"
+                            style={{ animationDelay: '140ms' }}
+                        >
 
                             <div className="mb-6">
 
@@ -475,7 +501,7 @@ export default async function DashboardPage({
                                         Administration
                                     </h2>
 
-                                    <span className="rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-500">
+                                    <span className="rounded-full border border-blue-500/15 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-500">
                                         Admin
                                     </span>
 
@@ -489,13 +515,13 @@ export default async function DashboardPage({
 
                             {/* Subscription Management */}
 
-                            <details className="group overflow-hidden rounded-2xl border border-border bg-card motion-card">
+                            <details className="glass motion-card group overflow-hidden rounded-2xl">
 
-                                <summary className="flex cursor-pointer list-none items-center justify-between px-6 py-5 transition hover:bg-muted/40 [&::-webkit-details-marker]:hidden">
+                                <summary className="flex cursor-pointer list-none items-center justify-between px-6 py-5 transition hover:bg-white/5 [&::-webkit-details-marker]:hidden">
 
                                     <div className="flex items-center gap-4">
 
-                                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500/10 text-xl font-semibold text-blue-600">
+                                        <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-blue-500/15 bg-blue-500/10 text-xl font-semibold text-blue-600 dark:text-blue-300">
                                             +
                                         </div>
 
@@ -519,21 +545,23 @@ export default async function DashboardPage({
 
                                 </summary>
 
-                                <div className="border-t border-border px-6 py-6">
-                                    <AdminControls />
+                                <div className="details-panel-wrapper">
+                                    <div className="border-t border-border/50 px-6 py-6">
+                                        <AdminControls />
+                                    </div>
                                 </div>
 
                             </details>
 
                             {/* Invoice Management */}
 
-                            <details className="group mt-4 overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow duration-200 hover:shadow-md motion-card">
+                            <details className="glass motion-card group mt-4 overflow-hidden rounded-2xl">
 
-                                <summary className="flex cursor-pointer list-none items-center justify-between border-b border-border bg-muted/10 px-6 py-5 transition hover:bg-muted/20 [&::-webkit-details-marker]:hidden">
+                                <summary className="flex cursor-pointer list-none items-center justify-between border-b border-border/40 bg-background/10 px-6 py-5 transition hover:bg-white/5 [&::-webkit-details-marker]:hidden">
 
                                     <div className="flex items-center gap-4">
 
-                                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-lg font-bold text-emerald-500">
+                                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-emerald-500/15 bg-emerald-500/10 text-lg font-bold text-emerald-500">
                                             ₹
                                         </div>
 
@@ -557,28 +585,26 @@ export default async function DashboardPage({
 
                                 </summary>
 
-                                <div className="p-6">
+                                <div className="details-panel-wrapper">
+                                    <div className="p-6">
+                                        <InvoiceControls />
 
-                                    <InvoiceControls />
+                                        <div className="mt-8 border-t border-border/50 pt-8">
+                                            <div className="mb-5">
 
-                                    <div className="mt-8 border-t border-border pt-8">
+                                                <h4 className="text-sm font-semibold">
+                                                    Bulk Invoice Generation
+                                                </h4>
 
-                                        <div className="mb-5">
+                                                <p className="mt-1 text-xs text-muted-foreground">
+                                                    Generate the current billing period across all active subscriptions.
+                                                </p>
 
-                                            <h4 className="text-sm font-semibold">
-                                                Bulk Invoice Generation
-                                            </h4>
+                                            </div>
 
-                                            <p className="mt-1 text-xs text-muted-foreground">
-                                                Generate the current billing period across all active subscriptions.
-                                            </p>
-
+                                            <BulkInvoiceGenerator />
                                         </div>
-
-                                        <BulkInvoiceGenerator />
-
                                     </div>
-
                                 </div>
 
                             </details>
@@ -587,13 +613,16 @@ export default async function DashboardPage({
 
                     ) : (
 
-                        <section className="mt-14 animate-fade-up" style={{ animationDelay: '140ms' }}>
+                        <section
+                            className="mt-14 animate-fade-up"
+                            style={{ animationDelay: '140ms' }}
+                        >
 
-                            <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
+                            <div className="glass motion-card rounded-2xl p-8">
 
                                 <div className="flex items-start gap-4">
 
-                                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-xl text-blue-500">
+                                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-blue-500/15 bg-blue-500/10 text-xl text-blue-500">
                                         →
                                     </div>
 

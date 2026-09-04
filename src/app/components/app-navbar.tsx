@@ -36,32 +36,32 @@ export default function AppNavbar() {
     false
 
   const linkClass = (href: string) =>
-    `rounded-lg px-3 py-2 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20 ${
+    `glass-button motion-button rounded-xl px-3.5 py-2 text-xs font-semibold focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20 ${
       isActive(href)
-        ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/20'
-        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+        ? 'border-blue-400/30 bg-blue-500/12 text-blue-700 shadow-sm shadow-blue-500/10 dark:border-blue-400/20 dark:bg-blue-500/12 dark:text-blue-300'
+        : 'text-muted-foreground hover:text-foreground'
     }`
 
   return (
-    <nav className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
+    <nav className="sticky top-0 z-40 border-b border-border/50 bg-background/45 backdrop-blur-2xl supports-[backdrop-filter]:bg-background/35">
       <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between gap-4">
+        <div className="flex h-[68px] items-center justify-between gap-4">
           {/* Logo */}
           <Link
             href="/dashboard"
-            className="flex items-center gap-3 rounded-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
+            className="group flex min-w-0 items-center gap-3 rounded-xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
             onClick={() => setMenuOpen(false)}
           >
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-lg font-bold text-white shadow-sm shadow-blue-600/30">
+            <span className="glass-primary motion-button flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg font-bold text-white">
               B
             </span>
 
             <span className="min-w-0">
-              <span className="block text-sm font-bold tracking-tight sm:text-base">
+              <span className="block truncate text-sm font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-blue-500 sm:text-base">
                 Subscription Billing
               </span>
 
-              <span className="block text-xs text-muted-foreground">
+              <span className="block truncate text-xs text-muted-foreground transition-colors duration-200 group-hover:text-foreground/70">
                 Operations console
               </span>
             </span>
@@ -94,7 +94,7 @@ export default function AppNavbar() {
             aria-expanded={menuOpen}
             aria-controls="mobile-navigation"
             onClick={() => setMenuOpen((open) => !open)}
-            className="inline-flex h-10 items-center rounded-lg border border-border px-3 text-xs font-semibold transition hover:bg-muted focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20 md:hidden"
+            className="glass-button motion-button inline-flex h-10 items-center rounded-xl px-4 text-xs font-semibold text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20 md:hidden"
           >
             {menuOpen ? 'Close' : 'Menu'}
           </button>
@@ -104,9 +104,9 @@ export default function AppNavbar() {
         {menuOpen && (
           <div
             id="mobile-navigation"
-            className="grid gap-3 border-t border-border py-4 md:hidden"
+            className="grid gap-3 border-t border-border/40 py-4 animate-fade-up md:hidden"
           >
-            <div className="grid gap-2">
+            <div className="glass grid gap-2 rounded-2xl p-2">
               {navItems.map((item) => (
                 <Link
                   key={item.href}

@@ -39,13 +39,17 @@ export default async function AlertsPage() {
     <>
       <AppNavbar />
 
-      <main className="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <p className="text-sm font-semibold text-blue-600">
+      <main className="mx-auto max-w-7xl px-5 py-8 text-foreground animate-fade-in sm:px-6 lg:px-8">
+        {/* Header */}
+        <div
+          className="mb-8 animate-fade-up"
+          style={{ animationDelay: '70ms' }}
+        >
+          <p className="text-sm font-semibold text-blue-600 dark:text-blue-300">
             Alerts
           </p>
 
-          <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground">
+          <h1 className="mt-2 text-3xl font-bold tracking-tight">
             Overdue Invoices
           </h1>
 
@@ -55,31 +59,41 @@ export default async function AlertsPage() {
           </p>
         </div>
 
-        <AlertsList
-          alerts={alerts.map((alert) => ({
-            id: alert.id,
-            invoice_id: alert.invoice_id,
-            invoice: {
-              id: alert.invoice.id,
-              amount: alert.invoice.amount,
-              due_date: alert.invoice.due_date,
-            },
-            subscription: {
-              customer_name:
-                alert.invoice.subscription.customer_name,
-              plan_name:
-                alert.invoice.subscription.plan_name,
-            },
-          }))}
-        />
+        {/* Active Alerts */}
+        <div
+          className="animate-fade-up"
+          style={{ animationDelay: '130ms' }}
+        >
+          <AlertsList
+            alerts={alerts.map((alert) => ({
+              id: alert.id,
+              invoice_id: alert.invoice_id,
+              invoice: {
+                id: alert.invoice.id,
+                amount: alert.invoice.amount,
+                due_date: alert.invoice.due_date,
+              },
+              subscription: {
+                customer_name:
+                  alert.invoice.subscription.customer_name,
+                plan_name:
+                  alert.invoice.subscription.plan_name,
+              },
+            }))}
+          />
+        </div>
 
-        <section className="mt-10">
+        {/* Alert History */}
+        <section
+          className="mt-10 animate-fade-up"
+          style={{ animationDelay: '190ms' }}
+        >
           <div className="mb-5">
-            <p className="text-sm font-semibold text-blue-600">
+            <p className="text-sm font-semibold text-blue-600 dark:text-blue-300">
               History
             </p>
 
-            <h2 className="mt-1 text-xl font-semibold text-foreground">
+            <h2 className="mt-1 text-xl font-semibold">
               Alert History
             </h2>
 
@@ -88,17 +102,29 @@ export default async function AlertsPage() {
             </p>
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+          <div className="motion-card overflow-hidden rounded-xl border border-border bg-card shadow-sm">
             {alertHistory.length === 0 ? (
-              <div className="p-10 text-center text-sm text-muted-foreground">
-                No dismissed alerts yet.
+              <div className="p-10 text-center animate-fade-scale">
+                <p className="text-sm font-semibold text-foreground">
+                  No dismissed alerts yet.
+                </p>
+
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Dismissed overdue alerts will appear here.
+                </p>
               </div>
             ) : (
               <div className="divide-y divide-border">
-                {alertHistory.map((alert) => (
+                {alertHistory.map((alert, index) => (
                   <div
                     key={alert.id}
-                    className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between"
+                    className="motion-card flex flex-col gap-4 p-4 animate-fade-up sm:flex-row sm:items-center sm:justify-between"
+                    style={{
+                      animationDelay: `${Math.min(
+                        500,
+                        230 + index * 60
+                      )}ms`,
+                    }}
                   >
                     <div>
                       <p className="font-semibold text-foreground">

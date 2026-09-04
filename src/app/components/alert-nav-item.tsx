@@ -41,12 +41,6 @@ export default function AlertNavItem() {
     }
   }, [])
 
-  /*
-   * Render nothing only after we've confirmed the user
-   * is not an admin.
-   *
-   * Until then, keep the navigation slot stable.
-   */
   if (loaded && !isAdmin) {
     return null
   }
@@ -54,15 +48,19 @@ export default function AlertNavItem() {
   return (
     <Link
       href="/alerts"
-      className="rounded-lg px-3 py-2 text-xs font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
+      className="glass-button motion-button group relative rounded-xl px-3.5 py-2 text-xs font-semibold text-muted-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
     >
-      Alerts
+      <span className="inline-flex items-center">
+        Alerts
 
-      {loaded && count > 0 && (
-        <span className="ml-2 inline-flex min-w-5 items-center justify-center rounded-full bg-red-600 px-1.5 py-0.5 text-[10px] font-bold leading-none text-white">
-          {count > 99 ? '99+' : count}
-        </span>
-      )}
+        {loaded && count > 0 && (
+          <span
+            className="ml-2 inline-flex min-w-5 items-center justify-center rounded-full bg-red-500/15 px-1.5 py-0.5 text-[10px] font-bold leading-none text-red-700 shadow-sm shadow-red-500/10 animate-fade-scale transition-transform duration-200 group-hover:scale-105 dark:bg-red-500/15 dark:text-red-300"
+          >
+            {count > 99 ? '99+' : count}
+          </span>
+        )}
+      </span>
     </Link>
   )
-} 
+}

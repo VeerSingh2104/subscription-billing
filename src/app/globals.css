@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 /* Use the .dark class instead of the system preference */
+/* Tailwind CSS v4 directive; unsupported by generic CSS linters. */
+/* stylelint-disable-next-line at-rule-no-unknown */
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
@@ -65,9 +67,9 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* --------------------------------------------------
-   Animation Foundation
-   -------------------------------------------------- */
+/* =========================================================
+   PAGE ANIMATIONS
+   ========================================================= */
 
 @keyframes fade-in {
   from {
@@ -115,20 +117,160 @@ body {
   animation: fade-scale 0.35s ease-out both;
 }
 
-/* --------------------------------------------------
-   Subtle Interaction Utilities
-   -------------------------------------------------- */
+/* =========================================================
+   GLASS SURFACES
+   ========================================================= */
+
+.glass {
+  background: color-mix(
+    in srgb,
+    var(--card) 72%,
+    transparent
+  );
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border: 1px solid color-mix(
+    in srgb,
+    var(--border) 70%,
+    transparent
+  );
+
+  box-shadow:
+    0 8px 30px rgb(0 0 0 / 0.04),
+    inset 0 1px 0 rgb(255 255 255 / 0.08);
+}
+
+.dark .glass {
+  box-shadow:
+    0 8px 30px rgb(0 0 0 / 0.18),
+    inset 0 1px 0 rgb(255 255 255 / 0.03);
+}
+
+/* =========================================================
+   GLASS BUTTONS
+   ========================================================= */
+
+.glass-button {
+  background: color-mix(
+    in srgb,
+    var(--card) 62%,
+    transparent
+  );
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  border: 1px solid color-mix(
+    in srgb,
+    var(--border) 80%,
+    transparent
+  );
+
+  box-shadow:
+    0 4px 16px rgb(0 0 0 / 0.04),
+    inset 0 1px 0 rgb(255 255 255 / 0.08);
+
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    opacity 180ms ease;
+}
+
+.glass-button:hover {
+  transform: translateY(-1px);
+
+  background: color-mix(
+    in srgb,
+    var(--card) 78%,
+    transparent
+  );
+
+  border-color: color-mix(
+    in srgb,
+    var(--border) 100%,
+    transparent
+  );
+
+  box-shadow:
+    0 8px 24px rgb(0 0 0 / 0.07),
+    inset 0 1px 0 rgb(255 255 255 / 0.12);
+}
+
+.glass-button:active {
+  transform: translateY(0);
+}
+
+.glass-button:disabled {
+  transform: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   GLASS PRIMARY BUTTON
+   ========================================================= */
+
+.glass-primary {
+  background: rgb(37 99 235 / 0.88);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgb(96 165 250 / 0.35);
+
+  box-shadow:
+    0 6px 20px rgb(37 99 235 / 0.18),
+    inset 0 1px 0 rgb(255 255 255 / 0.16);
+
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    opacity 180ms ease;
+}
+
+.glass-primary:hover {
+  transform: translateY(-1px);
+  background: rgb(29 78 216 / 0.92);
+
+  box-shadow:
+    0 10px 28px rgb(37 99 235 / 0.24),
+    inset 0 1px 0 rgb(255 255 255 / 0.2);
+}
+
+.glass-primary:active {
+  transform: translateY(0);
+}
+
+.glass-primary:disabled {
+  transform: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   CARD MOTION
+   ========================================================= */
 
 .motion-card {
   transition:
     transform 180ms ease,
     box-shadow 180ms ease,
-    border-color 180ms ease;
+    border-color 180ms ease,
+    background-color 180ms ease;
 }
 
 .motion-card:hover {
   transform: translateY(-2px);
 }
+
+/* =========================================================
+   BUTTON MOTION
+   ========================================================= */
 
 .motion-button {
   transition:
@@ -147,15 +289,98 @@ body {
   transform: translateY(0);
 }
 
+/* =========================================================
+   LINK MOTION
+   ========================================================= */
+
 .motion-link {
   transition:
     color 150ms ease,
     opacity 150ms ease;
 }
 
-/* --------------------------------------------------
-   Reduced Motion
-   -------------------------------------------------- */
+/* =========================================================
+   THEME TRANSITION
+   ========================================================= */
+
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition:
+    background-color 300ms ease,
+    color 300ms ease,
+    border-color 300ms ease,
+    box-shadow 300ms ease !important;
+}
+
+/* =========================================================
+   LOGIN / SIGNUP CLOUD BACKGROUND
+   ========================================================= */
+
+@keyframes cloud-one {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(8vw, 5vh, 0) scale(1.12);
+  }
+}
+
+@keyframes cloud-two {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(-7vw, 8vh, 0) scale(1.1);
+  }
+}
+
+@keyframes cloud-three {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(6vw, -7vh, 0) scale(1.15);
+  }
+}
+
+@keyframes cloud-four {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(-6vw, -5vh, 0) scale(1.12);
+  }
+}
+
+.animate-cloud-one {
+  animation: cloud-one 18s ease-in-out infinite;
+}
+
+.animate-cloud-two {
+  animation: cloud-two 22s ease-in-out infinite;
+}
+
+.animate-cloud-three {
+  animation: cloud-three 20s ease-in-out infinite;
+}
+
+.animate-cloud-four {
+  animation: cloud-four 24s ease-in-out infinite;
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -169,7 +394,38 @@ body {
 
   .motion-card:hover,
   .motion-button:hover,
-  .motion-button:active {
+  .motion-button:active,
+  .glass-button:hover,
+  .glass-button:active,
+  .glass-primary:hover,
+  .glass-primary:active {
     transform: none;
+  }
+}
+/* =========================================================
+   SMOOTH DETAILS / ADMIN PANELS
+   ========================================================= */
+
+.details-panel-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition:
+    grid-template-rows 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 220ms ease;
+  opacity: 0;
+}
+
+.details-panel-wrapper > div {
+  overflow: hidden;
+}
+
+details[open] > .details-panel-wrapper {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .details-panel-wrapper {
+    transition: none;
   }
 }

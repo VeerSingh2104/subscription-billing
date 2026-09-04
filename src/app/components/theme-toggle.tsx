@@ -19,18 +19,34 @@ export default function ThemeToggle() {
                 '(prefers-color-scheme: dark)'
             ).matches
 
-            if (prefersDark) {
-                document.documentElement.classList.add('dark')
-                setDarkMode(true)
-            }
+            document.documentElement.classList.toggle(
+                'dark',
+                prefersDark
+            )
+
+            setDarkMode(prefersDark)
         }
     }, [])
 
     const toggleTheme = () => {
-        const isDark = document.documentElement.classList.toggle('dark')
+        const root = document.documentElement
+        const isDark = root.classList.contains('dark')
 
-        setDarkMode(isDark)
-        localStorage.setItem('theme', isDark ? 'dark' : 'light')
+        root.classList.add('theme-transition')
+
+        if (isDark) {
+            root.classList.remove('dark')
+            setDarkMode(false)
+            localStorage.setItem('theme', 'light')
+        } else {
+            root.classList.add('dark')
+            setDarkMode(true)
+            localStorage.setItem('theme', 'dark')
+        }
+
+        window.setTimeout(() => {
+            root.classList.remove('theme-transition')
+        }, 300)
     }
 
     return (
@@ -38,19 +54,21 @@ export default function ThemeToggle() {
             type="button"
             onClick={toggleTheme}
             aria-label="Toggle theme"
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-border bg-card px-4 text-xs font-semibold text-foreground shadow-sm transition hover:bg-muted focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
+            className="glass-button motion-button inline-flex h-10 items-center justify-center gap-2 rounded-xl px-4 text-xs font-semibold text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
         >
-            {darkMode ? (
-                <>
-                    <span className="text-base">☀</span>
-                    Light Mode
-                </>
-            ) : (
-                <>
-                    <span className="text-base">☾</span>
-                    Dark Mode
-                </>
-            )}
+            <span
+                className={`inline-flex text-base transition-all duration-300 ${
+                    darkMode
+                        ? 'rotate-0 scale-100'
+                        : 'rotate-[-20deg] scale-100'
+                }`}
+            >
+                {darkMode ? '☀' : '☾'}
+            </span>
+
+            <span className="transition-opacity duration-200">
+                {darkMode ? 'Light Mode' : 'Dark Mode'}
+            </span>
         </button>
     )
 }

@@ -17,54 +17,82 @@ export default async function InvoiceHistory({
 
   if (error) {
     return (
-      <p className="mt-4 text-sm text-red-600">
-        Could not load history: {error.message}
-      </p>
+      <div className="mt-5 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300">
+        Unable to load invoice history: {error.message}
+      </div>
     )
   }
 
   if (!history || history.length === 0) {
     return (
-      <p className="mt-4 text-sm text-gray-500">
-        No history found.
-      </p>
+      <div className="mt-5 rounded-2xl border border-dashed border-border bg-muted/10 px-5 py-8 text-center">
+        <p className="text-sm font-semibold text-foreground">
+          No invoice history yet.
+        </p>
+
+        <p className="mt-1 text-xs text-muted-foreground">
+          Changes and activity for this invoice will appear here.
+        </p>
+      </div>
     )
   }
 
   return (
-    <div className="mt-4 border-t pt-4">
-      <h3 className="font-semibold">
-        Invoice History
-      </h3>
+    <section className="mt-5 border-t border-border pt-5">
+      <div className="flex items-center gap-2">
+        <span className="h-2 w-2 rounded-full bg-blue-500 shadow-sm shadow-blue-500/40" />
 
-      <div className="mt-3 space-y-3">
-        {history.map((event) => (
+        <h3 className="text-base font-bold text-foreground">
+          Invoice History
+        </h3>
+      </div>
+
+      <div className="mt-4 space-y-3">
+        {history.map((event, index) => (
           <div
             key={event.id}
-            className="rounded-md bg-gray-50 p-3 text-sm"
+            className="glass motion-card relative overflow-hidden rounded-2xl px-4 py-4 animate-fade-up"
+            style={{
+              animationDelay: `${Math.min(400, index * 60)}ms`,
+            }}
           >
-            <p className="font-medium">
-              {event.event_type}
-            </p>
+            <div className="absolute inset-y-0 left-0 w-0.5 bg-blue-500/50" />
 
-            {event.event_type === 'STATUS_CHANGED' && (
-              <p className="mt-1 text-gray-600">
-                {event.old_status} → {event.new_status}
+            <div className="pl-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-sm font-semibold text-foreground">
+                  {event.event_type === 'STATUS_CHANGED'
+                    ? `${event.old_status} → ${event.new_status}`
+                    : event.event_type}
+                </p>
+              </div>
+
+              {event.event_type === 'STATUS_CHANGED' && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Invoice status changed from{' '}
+                  <span className="font-medium text-foreground">
+                    {event.old_status}
+                  </span>{' '}
+                  to{' '}
+                  <span className="font-medium text-foreground">
+                    {event.new_status}
+                  </span>
+                </p>
+              )}
+
+              {/* {event.details?.message && (
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  {event.details.message}
+                </p>
+              )} */}
+
+              <p className="mt-2 text-[11px] text-muted-foreground/70">
+                {new Date(event.created_at).toLocaleString()}
               </p>
-            )}
-
-            {event.details?.message && (
-              <p className="mt-1 text-gray-500">
-                {event.details.message}
-              </p>
-            )}
-
-            <p className="mt-1 text-xs text-gray-400">
-              {new Date(event.created_at).toLocaleString()}
-            </p>
+            </div>
           </div>
         ))}
       </div>
-    </div>
+    </section>
   )
 }
