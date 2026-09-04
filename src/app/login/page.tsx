@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-
+import Image from 'next/image'
 export default function LoginPage() {
   const router = useRouter()
   const supabase = createClient()
@@ -64,9 +64,16 @@ export default function LoginPage() {
             style={{ animationDelay: '70ms' }}
           >
             <div className="mb-5 flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-lg font-bold text-white shadow-sm shadow-blue-600/20">
-                B
-              </span>
+              <span className="glass-primary flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl">
+                <Image
+                    src="/icon.png"
+                    alt="Subscription Billing"
+                    width={64}
+                    height={64}
+                    priority
+                    className="h-full w-full object-cover"
+                />
+            </span>
 
               <div>
                 <h1 className="text-xl font-bold tracking-tight">

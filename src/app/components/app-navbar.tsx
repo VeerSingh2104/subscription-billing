@@ -1,5 +1,5 @@
 'use client'
-
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
@@ -60,9 +60,16 @@ export default function AppNavbar() {
             className="group flex min-w-0 items-center gap-3 rounded-xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
             onClick={() => setMenuOpen(false)}
           >
-            <span className="glass-primary motion-button flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg font-bold text-white">
-              B
-            </span>
+            <span className="glass-primary motion-button flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl">
+    <Image
+        src="/icon.png"
+        alt="Subscription Billing"
+        width={40}
+        height={40}
+        priority
+        className="h-full w-full object-cover"
+    />
+</span>
 
             <span className="min-w-0">
               <span className="block truncate text-sm font-bold tracking-tight text-foreground transition-colors duration-200 group-hover:text-blue-500 sm:text-base">

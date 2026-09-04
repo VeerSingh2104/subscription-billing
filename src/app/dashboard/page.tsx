@@ -140,9 +140,7 @@ export default async function DashboardPage({
 
                             <div className="flex items-start gap-4">
 
-                                <div className="glass-primary motion-button flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-2xl font-bold text-white">
-                                    B
-                                </div>
+                                
 
                                 <div className="min-w-0">
 
