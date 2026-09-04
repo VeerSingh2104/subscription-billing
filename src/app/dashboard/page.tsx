@@ -133,6 +133,7 @@ export default async function DashboardPage({
                     {/* ====================================================== */}
 
                     <header
+                        data-tour="dashboard-overview"
                         className="glass rounded-3xl p-6 animate-fade-up sm:p-7"
                     >
                         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
@@ -196,6 +197,7 @@ export default async function DashboardPage({
                     {/* ====================================================== */}
 
                     <div
+                        data-tour="analytics"
                         className="animate-fade-up"
                         style={{ animationDelay: '80ms' }}
                     >
@@ -207,6 +209,7 @@ export default async function DashboardPage({
                     {/* ====================================================== */}
 
                     <section
+                        data-tour="dashboard-subscriptions"
                         className="mt-14 animate-fade-up"
                         style={{ animationDelay: '140ms' }}
                     >
@@ -291,10 +294,10 @@ export default async function DashboardPage({
                                         animationDelay: `${Math.min(
                                             260,
                                             180 +
-                                            subscriptionsWithCollaborators.indexOf(
-                                                subscription
-                                            ) *
-                                            70
+                                                subscriptionsWithCollaborators.indexOf(
+                                                    subscription
+                                                ) *
+                                                    70
                                         )}ms`,
                                     }}
                                     className="glass motion-card group relative overflow-hidden rounded-2xl animate-fade-up hover:border-blue-500/30 hover:shadow-xl hover:shadow-blue-500/5"
@@ -343,7 +346,6 @@ export default async function DashboardPage({
                                                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
 
                                                 {subscription.status || 'Active'}
-
                                             </span>
 
                                         </div>
@@ -486,9 +488,10 @@ export default async function DashboardPage({
                     {/* ADMINISTRATION */}
                     {/* ====================================================== */}
 
-                    {profile.role === 'BILLING_ADMIN' ? (
+                    {profile.role === 'BILLING_ADMIN' && (
 
                         <section
+                            data-tour="administration"
                             className="mt-14 animate-fade-up"
                             style={{ animationDelay: '140ms' }}
                         >
@@ -611,40 +614,6 @@ export default async function DashboardPage({
 
                         </section>
 
-                    ) : (
-
-                        <section
-                            className="mt-14 animate-fade-up"
-                            style={{ animationDelay: '140ms' }}
-                        >
-
-                            <div className="glass motion-card rounded-2xl p-8">
-
-                                <div className="flex items-start gap-4">
-
-                                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-blue-500/15 bg-blue-500/10 text-xl text-blue-500">
-                                        →
-                                    </div>
-
-                                    <div>
-
-                                        <h2 className="text-base font-bold">
-                                            Account Manager
-                                        </h2>
-
-                                        <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                                            Account management tools will appear here.
-                                            Your available tools depend on your assigned
-                                            permissions.
-                                        </p>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </section>
 
                     )}
 

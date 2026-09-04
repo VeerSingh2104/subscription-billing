@@ -42,6 +42,14 @@ export default function AppNavbar() {
         : 'text-muted-foreground hover:text-foreground'
     }`
 
+  const tourTarget = (href: string) => {
+    if (href === '/dashboard') return 'dashboard'
+    if (href === '/subscriptions') return 'subscriptions'
+    if (href === '/invoices') return 'invoices'
+
+    return undefined
+  }
+
   return (
     <nav className="sticky top-0 z-40 border-b border-border/50 bg-background/45 backdrop-blur-2xl supports-[backdrop-filter]:bg-background/35">
       <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
@@ -73,6 +81,7 @@ export default function AppNavbar() {
               <Link
                 key={item.href}
                 href={item.href}
+                data-tour={tourTarget(item.href)}
                 className={linkClass(item.href)}
               >
                 {item.label}
@@ -84,7 +93,10 @@ export default function AppNavbar() {
 
           {/* Desktop actions */}
           <div className="hidden items-center gap-2 md:flex">
-            <ThemeToggle />
+            <div data-tour="theme">
+              <ThemeToggle />
+            </div>
+
             <LogoutButton />
           </div>
 
@@ -111,6 +123,7 @@ export default function AppNavbar() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  data-tour={tourTarget(item.href)}
                   onClick={() => setMenuOpen(false)}
                   className={linkClass(item.href)}
                 >
@@ -122,7 +135,10 @@ export default function AppNavbar() {
             </div>
 
             <div className="grid gap-2 sm:grid-cols-2">
-              <ThemeToggle />
+              <div data-tour="theme">
+                <ThemeToggle />
+              </div>
+
               <LogoutButton />
             </div>
           </div>

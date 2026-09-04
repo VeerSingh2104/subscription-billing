@@ -1,9 +1,9 @@
 import PageTransition from '@/app/components/page-transition'
 
 export default function AppLayout({
-  children,
+    children,
 }: {
-  children: React.ReactNode
+    children: React.ReactNode
 }) {
-  return <PageTransition>{children}</PageTransition>
+    return <PageTransition>{children}</PageTransition>
 }
