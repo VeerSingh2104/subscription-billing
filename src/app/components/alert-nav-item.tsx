@@ -6,19 +6,12 @@ import { useEffect, useState } from 'react'
 const ROLE_CACHE_KEY = 'billing-alerts-is-admin'
 
 export default function AlertNavItem() {
-    const [isAdmin, setIsAdmin] = useState<boolean | null>(
-        null
-    )
+    const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
     const [count, setCount] = useState(0)
 
     useEffect(() => {
         let mounted = true
 
-        /*
-         * Use the cached role immediately when available.
-         * This prevents the Alerts item from flashing while
-         * navigating between app pages.
-         */
         const cachedRole = sessionStorage.getItem(
             ROLE_CACHE_KEY
         )
@@ -39,6 +32,10 @@ export default function AlertNavItem() {
                 )
 
                 if (!response.ok) {
+                    if (mounted && cachedRole === null) {
+                        setIsAdmin(false)
+                    }
+
                     return
                 }
 
@@ -46,8 +43,7 @@ export default function AlertNavItem() {
 
                 if (!mounted) return
 
-                const admin =
-                    data.isAdmin === true
+                const admin = data.isAdmin === true
 
                 setIsAdmin(admin)
 
@@ -56,14 +52,11 @@ export default function AlertNavItem() {
                     admin ? 'true' : 'false'
                 )
 
-                setCount(
-                    Number(data.count) || 0
-                )
+                setCount(Number(data.count) || 0)
             } catch {
-                /*
-                 * If a cached role exists, keep using it.
-                 * Otherwise remain hidden.
-                 */
+                if (mounted && cachedRole === null) {
+                    setIsAdmin(false)
+                }
             }
         }
 
@@ -74,12 +67,6 @@ export default function AlertNavItem() {
         }
     }, [])
 
-    /*
-     * Don't render anything until we know the role.
-     *
-     * This is important for a brand-new Account Manager
-     * who doesn't have a cached role yet.
-     */
     if (isAdmin !== true) {
         return null
     }
@@ -88,19 +75,19 @@ export default function AlertNavItem() {
         <Link
             href="/alerts"
             data-tour="alerts"
-            className="glass-button motion-button group relative rounded-xl px-3.5 py-2 text-xs font-semibold text-muted-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
+            className="group relative inline-flex items-center px-3.5 py-2 text-xs font-semibold text-muted-foreground transition-colors duration-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
         >
-            <span className="inline-flex items-center">
+            <span className="relative inline-flex items-center gap-2">
                 Alerts
 
                 {count > 0 && (
-                    <span className="ml-2 inline-flex min-w-5 items-center justify-center rounded-full bg-red-500/15 px-1.5 py-0.5 text-[10px] font-bold leading-none text-red-700 shadow-sm shadow-red-500/10 animate-fade-scale transition-transform duration-200 group-hover:scale-105 dark:bg-red-500/15 dark:text-red-300">
-                        {count > 99
-                            ? '99+'
-                            : count}
+                    <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-red-500/10 px-1.5 py-0.5 text-[10px] font-bold leading-none text-red-500 transition-transform duration-200 group-hover:scale-105 dark:bg-red-400/10 dark:text-red-400">
+                        {count > 99 ? '99+' : count}
                     </span>
                 )}
             </span>
+
+            <span className="absolute inset-x-3.5 -bottom-[19px] h-px origin-left scale-x-0 bg-blue-400 transition-transform duration-200 group-hover:scale-x-100" />
         </Link>
     )
 }
