@@ -123,7 +123,7 @@ export default async function DashboardPage({
 
     return (
         <>
-            <AppNavbar />
+            <AppNavbar isAdmin={profile.role === 'BILLING_ADMIN'} />
 
             <main className="min-h-screen bg-background text-foreground animate-fade-in">
                 <div className="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-8 lg:py-10">

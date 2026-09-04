@@ -3,26 +3,13 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
-const ROLE_CACHE_KEY = 'billing-alerts-is-admin'
-
 export default function AlertNavItem() {
-    const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
     const [count, setCount] = useState(0)
 
     useEffect(() => {
         let mounted = true
 
-        const cachedRole = sessionStorage.getItem(
-            ROLE_CACHE_KEY
-        )
-
-        if (cachedRole === 'true') {
-            setIsAdmin(true)
-        } else if (cachedRole === 'false') {
-            setIsAdmin(false)
-        }
-
-        async function loadAlerts() {
+        async function loadAlertCount() {
             try {
                 const response = await fetch(
                     '/api/alerts/summary',
@@ -31,50 +18,29 @@ export default function AlertNavItem() {
                     }
                 )
 
-                if (!response.ok) {
-                    if (mounted && cachedRole === null) {
-                        setIsAdmin(false)
-                    }
-
-                    return
-                }
+                if (!response.ok) return
 
                 const data = await response.json()
 
                 if (!mounted) return
 
-                const admin = data.isAdmin === true
-
-                setIsAdmin(admin)
-
-                sessionStorage.setItem(
-                    ROLE_CACHE_KEY,
-                    admin ? 'true' : 'false'
-                )
-
                 setCount(Number(data.count) || 0)
             } catch {
-                if (mounted && cachedRole === null) {
-                    setIsAdmin(false)
-                }
+                // Keep the Alerts item visible even if the
+                // background count request fails.
             }
         }
 
-        loadAlerts()
+        loadAlertCount()
 
         return () => {
             mounted = false
         }
     }, [])
 
-    if (isAdmin !== true) {
-        return null
-    }
-
     return (
         <Link
             href="/alerts"
-            data-tour="alerts"
             className="group relative inline-flex items-center px-3.5 py-2 text-xs font-semibold text-muted-foreground transition-colors duration-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20"
         >
             <span className="relative inline-flex items-center gap-2">

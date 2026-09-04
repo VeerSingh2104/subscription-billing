@@ -33,7 +33,15 @@ export default async function InvoicesPage({
   if (!user) {
     redirect('/login')
   }
+  const { data: profile, error: profileError } = await supabase
+  .from('profiles')
+  .select('role')
+  .eq('id', user.id)
+  .single()
 
+if (profileError || !profile) {
+  redirect('/login')
+}
   const params = await searchParams
 
   const query =
@@ -414,7 +422,7 @@ export default async function InvoicesPage({
 
   return (
     <>
-      <AppNavbar />
+      <AppNavbar isAdmin={profile.role === 'BILLING_ADMIN'} />
 
       <main className="min-h-screen bg-background text-foreground animate-fade-in">
         <div className="mx-auto max-w-7xl px-5 py-6 sm:px-6 lg:px-8 lg:py-8">

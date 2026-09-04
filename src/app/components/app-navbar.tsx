@@ -29,7 +29,13 @@ const navItems = [
     },
 ]
 
-export default function AppNavbar() {
+type AppNavbarProps = {
+    isAdmin: boolean
+}
+
+export default function AppNavbar({
+    isAdmin,
+}: AppNavbarProps) {
     const pathname = usePathname()
     const [menuOpen, setMenuOpen] = useState(false)
 
@@ -120,9 +126,11 @@ export default function AppNavbar() {
                             )
                         })}
 
-                        <div data-tour="alerts">
-                            <AlertNavItem />
-                        </div>
+                        {isAdmin && (
+                            <div data-tour="alerts">
+                                <AlertNavItem />
+                            </div>
+                        )}
                     </div>
 
                     {/* Desktop actions */}
@@ -196,9 +204,11 @@ export default function AppNavbar() {
                                 )
                             })}
 
-                            <div data-tour="alerts">
-                                <AlertNavItem />
-                            </div>
+                            {isAdmin && (
+                                <div data-tour="alerts">
+                                    <AlertNavItem />
+                                </div>
+                            )}
                         </div>
 
                         <div className="grid gap-2 border-t border-border/40 pt-3 sm:grid-cols-2">

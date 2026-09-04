@@ -37,7 +37,7 @@ export default async function AlertsPage() {
 
   return (
     <>
-      <AppNavbar />
+      <AppNavbar isAdmin={profile.role === 'BILLING_ADMIN'} />
 
       <main className="mx-auto max-w-7xl px-5 py-8 text-foreground animate-fade-in sm:px-6 lg:px-8">
         {/* Header */}

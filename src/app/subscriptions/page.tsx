@@ -13,7 +13,15 @@ export default async function SubscriptionsPage() {
   if (!user) {
     redirect('/login')
   }
+  const { data: profile, error: profileError } = await supabase
+  .from('profiles')
+  .select('role')
+  .eq('id', user.id)
+  .single()
 
+if (profileError || !profile) {
+  redirect('/login')
+}
   const { data: subscriptions, error } = await supabase
     .from('subscriptions')
     .select('*')
@@ -21,7 +29,7 @@ export default async function SubscriptionsPage() {
 
   return (
     <>
-      <AppNavbar />
+      <AppNavbar isAdmin={profile.role === 'BILLING_ADMIN'} />
 
       <main className="min-h-screen bg-background text-foreground animate-fade-in">
         <div className="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-8 lg:py-10">
