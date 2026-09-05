@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
 import GuidedTour from '@/app/components/guided-tour'
+import RouteLoadingIndicator from '@/app/components/route-loading-indicator'
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -56,10 +57,12 @@ export default function RootLayout({
                 </Script>
             </head>
 
-            <body className="min-h-full flex flex-col">
+            <body className="site-background min-h-full flex flex-col">
                 <main className="flex-1">
                     {children}
                 </main>
+
+                <RouteLoadingIndicator />
 
                 <GuidedTour />
             </body>
